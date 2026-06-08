@@ -1,0 +1,2 @@
+class DeviceGrade < ApplicationRecord
+end
