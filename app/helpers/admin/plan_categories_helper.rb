@@ -1,0 +1,2 @@
+module Admin::PlanCategoriesHelper
+end
