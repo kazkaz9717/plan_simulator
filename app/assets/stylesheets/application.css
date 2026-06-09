@@ -13,3 +13,17 @@
  *= require_tree .
  *= require_self
  */
+
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-btn.active {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+}
