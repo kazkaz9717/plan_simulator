@@ -12,6 +12,12 @@ Rails.application.routes.draw do
 
   # 管理者専用
   namespace :admin do
+    get "devices/index"
+    get "devices/new"
+    get "devices/edit"
+    get "device_grades/index"
+    get "device_grades/new"
+    get "device_grades/edit"
     resources :plans
     resources :plan_categories
     resources :plan_combinations, only: [:index, :new, :create, :destroy]
