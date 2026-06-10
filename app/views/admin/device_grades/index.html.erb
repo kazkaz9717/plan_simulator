@@ -1,2 +1,23 @@
-<h1>Admin::DeviceGrades#index</h1>
-<p>Find me in app/views/admin/device_grades/index.html.erb</p>
+<h1>グレード管理</h1>
+<%= link_to '新規追加', new_admin_device_grade_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>グレード名</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @device_grades.each do |device_grade| %>
+      <tr>
+        <td><%= device_grade.name %></td>
+        <td>
+          <%= link_to '編集', edit_admin_device_grade_path(device_grade) %>
+          <%= button_to '削除', admin_device_grade_path(device_grade), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

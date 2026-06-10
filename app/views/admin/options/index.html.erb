@@ -1,2 +1,27 @@
-<h1>Admin::Options#index</h1>
-<p>Find me in app/views/admin/options/index.html.erb</p>
+<h1>オプション管理</h1>
+<%= link_to '新規追加', new_admin_option_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>オプション名</th>
+      <th>価格</th>
+      <th>説明</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @options.each do |option| %>
+      <tr>
+        <td><%= option.name %></td>
+        <td>¥<%= number_with_delimiter(option.price) %></td>
+        <td><%= option.description %></td>
+        <td>
+          <%= link_to '編集', edit_admin_option_path(option) %>
+          <%= button_to '削除', admin_option_path(option), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,26 @@
+<%= form_with model: [:admin, option] do |f| %>
+  <% if option.errors.any? %>
+    <ul>
+      <% option.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, 'オプション名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :price, '価格' %>
+    <%= f.number_field :price %>
+  </div>
+
+  <div>
+    <%= f.label :description, '説明' %>
+    <%= f.text_area :description %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

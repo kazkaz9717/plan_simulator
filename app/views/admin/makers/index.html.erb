@@ -1,2 +1,23 @@
-<h1>Admin::Makers#index</h1>
-<p>Find me in app/views/admin/makers/index.html.erb</p>
+<h1>メーカー管理</h1>
+<%= link_to '新規追加', new_admin_maker_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>メーカー名</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @makers.each do |maker| %>
+      <tr>
+        <td><%= maker.name %></td>
+        <td>
+          <%= link_to '編集', edit_admin_maker_path(maker) %>
+          <%= button_to '削除', admin_maker_path(maker), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

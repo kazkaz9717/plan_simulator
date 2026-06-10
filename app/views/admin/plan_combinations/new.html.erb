@@ -1,2 +1,25 @@
-<h1>Admin::PlanCombinations#new</h1>
-<p>Find me in app/views/admin/plan_combinations/new.html.erb</p>
+<h1>プラン組み合わせ新規追加</h1>
+
+<%= form_with model: [:admin, @plan_combination] do |f| %>
+  <% if @plan_combination.errors.any? %>
+    <ul>
+      <% @plan_combination.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :data_plan_id, 'データプラン' %>
+    <%= f.collection_select :data_plan_id, @data_plans, :id, :name, prompt: '選択してください' %>
+  </div>
+
+  <div>
+    <%= f.label :voice_plan_id, '音声通話プラン' %>
+    <%= f.collection_select :voice_plan_id, @voice_plans, :id, :name, prompt: '選択してください' %>
+  </div>
+
+  <%= f.submit %>
+<% end %>
+
+<%= link_to '一覧に戻る', admin_plan_combinations_path %>

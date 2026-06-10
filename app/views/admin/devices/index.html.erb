@@ -1,2 +1,31 @@
-<h1>Admin::Devices#index</h1>
-<p>Find me in app/views/admin/devices/index.html.erb</p>
+<h1>機種管理</h1>
+<%= link_to '新規追加', new_admin_device_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>機種名</th>
+      <th>メーカー</th>
+      <th>グレード</th>
+      <th>価格</th>
+      <th>説明</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.name %></td>
+        <td><%= device.maker.name %></td>
+        <td><%= device.device_grade.name %></td>
+        <td>¥<%= number_with_delimiter(device.price) %></td>
+        <td><%= device.description %></td>
+        <td>
+          <%= link_to '編集', edit_admin_device_path(device) %>
+          <%= button_to '削除', admin_device_path(device), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

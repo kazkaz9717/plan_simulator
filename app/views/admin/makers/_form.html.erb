@@ -1,0 +1,16 @@
+<%= form_with model: [:admin, maker] do |f| %>
+  <% if maker.errors.any? %>
+    <ul>
+      <% maker.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, 'メーカー名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

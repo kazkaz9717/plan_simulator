@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>管理画面 | 通信プランシミュレーター</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <span>管理画面</span>
+        <%= link_to 'プラン管理', admin_plans_path %>
+        <%= link_to 'プランカテゴリ管理', admin_plan_categories_path %>
+        <%= link_to 'プラン組み合わせ管理', admin_plan_combinations_path %>
+        <%= link_to 'サブスク管理', admin_subscriptions_path %>
+        <%= link_to 'オプション管理', admin_options_path %>
+        <%= link_to 'メーカー管理', admin_makers_path %>
+        <%= link_to 'グレード管理', admin_device_grades_path %>
+        <%= link_to '機種管理', admin_devices_path %>
+        <%= link_to 'ユーザー管理', admin_users_path %>
+        <%= link_to 'シミュレーターへ', root_path %>
+        <%= button_to 'ログアウト', logout_path, method: :delete %>
+      </nav>
+    </header>
+
+    <main>
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

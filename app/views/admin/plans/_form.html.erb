@@ -1,0 +1,31 @@
+<%= form_with model: [:admin, plan] do |f| %>
+  <% if plan.errors.any? %>
+    <ul>
+      <% plan.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, 'プラン名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :plan_category_id, 'カテゴリ' %>
+    <%= f.collection_select :plan_category_id, PlanCategory.all, :id, :name, prompt: '選択してください' %>
+  </div>
+
+  <div>
+    <%= f.label :monthly_fee, '月額料金' %>
+    <%= f.number_field :monthly_fee %>
+  </div>
+
+  <div>
+    <%= f.label :description, '説明' %>
+    <%= f.text_area :description %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

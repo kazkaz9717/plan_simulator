@@ -10,6 +10,6 @@ class Plan < ApplicationRecord
            foreign_key: 'voice_plan_id',
            dependent: :destroy
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :monthly_fee, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end

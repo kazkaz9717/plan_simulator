@@ -1,0 +1,31 @@
+<%= form_with model: [:admin, user] do |f| %>
+  <% if user.errors.any? %>
+    <ul>
+      <% user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, 'ユーザー名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :password, 'パスワード' %>
+    <%= f.password_field :password %>
+  </div>
+
+  <div>
+    <%= f.label :password_confirmation, 'パスワード確認' %>
+    <%= f.password_field :password_confirmation %>
+  </div>
+
+  <div>
+    <%= f.label :role, '権限' %>
+    <%= f.select :role, User.roles.keys.map { |r| [r, r] }, prompt: '選択してください' %>
+  </div>
+
+  <%= f.submit %>
+<% end %>
