@@ -18,6 +18,16 @@
   </div>
 
   <div>
+  <%= f.label :plan_brand_ids, 'ブランド（複数選択可）' %>
+    <%= f.collection_check_boxes :plan_brand_ids, @plan_brands, :id, :name do |b| %>
+      <div>
+        <%= b.check_box %>
+        <%= b.label %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
     <%= f.label :monthly_fee, '月額料金' %>
     <%= f.number_field :monthly_fee %>
   </div>

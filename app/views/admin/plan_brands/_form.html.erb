@@ -1,0 +1,16 @@
+<%= form_with model: [:admin, plan_brand] do |f| %>
+  <% if plan_brand.errors.any? %>
+    <ul>
+      <% plan_brand.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, 'ブランド名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

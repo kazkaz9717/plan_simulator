@@ -1,0 +1,23 @@
+<h1>プランブランド管理</h1>
+<%= link_to '新規追加', new_admin_plan_brand_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>ブランド名</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @plan_brands.each do |plan_brand| %>
+      <tr>
+        <td><%= plan_brand.name %></td>
+        <td>
+          <%= link_to '編集', edit_admin_plan_brand_path(plan_brand) %>
+          <%= button_to '削除', admin_plan_brand_path(plan_brand), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

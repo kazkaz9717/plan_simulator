@@ -1,5 +1,7 @@
 class Plan < ApplicationRecord
   belongs_to :plan_category
+  has_many :plan_brand_plans, dependent: :destroy
+  has_many :plan_brands, through: :plan_brand_plans
 
   has_many :data_plan_combinations,
            class_name: 'PlanCombination',
@@ -12,4 +14,5 @@ class Plan < ApplicationRecord
 
   validates :name, presence: true
   validates :monthly_fee, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :plan_brands, presence: true
 end

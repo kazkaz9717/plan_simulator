@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_08_094823) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_10_105306) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_08_094823) do
     t.string "name"
     t.integer "price"
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plan_brand_plans", force: :cascade do |t|
+    t.bigint "plan_id", null: false
+    t.bigint "plan_brand_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_brand_id"], name: "index_plan_brand_plans_on_plan_brand_id"
+    t.index ["plan_id"], name: "index_plan_brand_plans_on_plan_id"
+  end
+
+  create_table "plan_brands", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -90,6 +105,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_08_094823) do
 
   add_foreign_key "devices", "device_grades"
   add_foreign_key "devices", "makers"
+  add_foreign_key "plan_brand_plans", "plan_brands"
+  add_foreign_key "plan_brand_plans", "plans"
   add_foreign_key "plan_combinations", "plans", column: "data_plan_id"
   add_foreign_key "plan_combinations", "plans", column: "voice_plan_id"
   add_foreign_key "plans", "plan_categories"
