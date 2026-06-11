@@ -1,0 +1,30 @@
+<h1>割引管理</h1>
+<%= link_to '新規追加', new_admin_discount_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>割引名</th>
+      <th>割引額/月</th>
+      <th>適用期間</th>
+      <th>説明</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @discounts.each do |discount| %>
+      <tr>
+        <td><%= discount.name %></td>
+        <td><%= discount.plan_brands.map(&:name).join(', ') %></td>
+        <td>¥<%= number_with_delimiter(discount.amount) %></td>
+        <td><%= discount.duration_months ? "#{discount.duration_months}ヶ月間" : '永年' %></td>
+        <td><%= discount.description %></td>
+        <td>
+          <%= link_to '編集', edit_admin_discount_path(discount) %>
+          <%= button_to '削除', admin_discount_path(discount), method: :delete,
+              data: { turbo_confirm: '本当に削除しますか？' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

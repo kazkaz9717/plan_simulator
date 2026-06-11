@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  discount: one
+  plan_brand: one
+
+two:
+  discount: two
+  plan_brand: two

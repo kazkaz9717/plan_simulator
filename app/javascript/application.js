@@ -13,26 +13,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 合計金額計算
     function calcTotal() {
-        let total = 0;
+        let baseTotal = 0;
         let todayFee = 0;
 
         // データプラン
         const dataPlan = document.querySelector('input[name="data_plan"]:checked');
-        if (dataPlan) total += parseInt(dataPlan.dataset.price);
+        if (dataPlan) baseTotal += parseInt(dataPlan.dataset.price);
 
         // 音声通話プラン
         const voicePlan = document.querySelector('input[name="voice_plan"]:checked');
-        if (voicePlan) total += parseInt(voicePlan.dataset.price);
+        if (voicePlan) baseTotal += parseInt(voicePlan.dataset.price);
 
         // キッズケータイプラン
         const kidsPlan = document.querySelector('input[name="kids_plan"]:checked');
-        if (kidsPlan) total += parseInt(kidsPlan.dataset.price);
+        if (kidsPlan) baseTotal += parseInt(kidsPlan.dataset.price);
 
         // サブスクリプション
         document.querySelectorAll('input[name="subscriptions[]"]:checked').forEach(el => {
-            total += parseInt(el.dataset.price);
+            baseTotal += parseInt(el.dataset.price);
         });
 
         // オプション（分割・一括計算）
@@ -43,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (installment === 1) {
                     todayFee += price;
                 } else {
-                    total += Math.ceil(price / installment);
+                    baseTotal += Math.ceil(price / installment);
                 }
             }
         });
@@ -56,11 +55,48 @@ document.addEventListener("DOMContentLoaded", () => {
             if (installment === 1) {
                 todayFee += price;
             } else {
-                total += Math.ceil(price / installment);
+                baseTotal += Math.ceil(price / installment);
             }
         }
 
-        document.getElementById("total-fee").textContent = total.toLocaleString();
+        // 割引（期間別に集計）
+        const selectedDiscounts = [];
+        document.querySelectorAll('input[name="discounts[]"]:checked').forEach(el => {
+            selectedDiscounts.push({
+                amount: parseInt(el.dataset.price),
+                duration: el.dataset.duration ? parseInt(el.dataset.duration) : null
+            });
+        });
+
+        // 期間の区切りを作る
+        const durations = [...new Set(selectedDiscounts.filter(d => d.duration).map(d => d.duration))].sort((a, b) => a - b);
+
+        const totalFeesArea = document.getElementById("total-fees");
+
+        if (durations.length === 0) {
+            // 期間限定割引なし：1行表示
+            const permanentDiscount = discounts.reduce((sum, d) => sum + d.amount, 0);
+            totalFeesArea.innerHTML = `<h2>月額合計：¥${(baseTotal - permanentDiscount).toLocaleString()}</h2>`;
+        } else {
+            // 期間限定割引あり：段階表示
+            let html = '';
+            let prevMonth = 0;
+
+            durations.forEach(duration => {
+                const activeDiscount = discounts
+                    .filter(d => d.duration === null || d.duration >= duration)
+                    .reduce((sum, d) => sum + d.amount, 0);
+                html += `<h2>月額合計（${prevMonth + 1}〜${duration}ヶ月目）：¥${(baseTotal - activeDiscount).toLocaleString()}</h2>`;
+                prevMonth = duration;
+            });
+
+            // 期間終了後
+            const permanentDiscount = discounts.filter(d => d.duration === null).reduce((sum, d) => sum + d.amount, 0);
+            html += `<h2>月額合計（${prevMonth + 1}ヶ月目以降）：¥${(baseTotal - permanentDiscount).toLocaleString()}</h2>`;
+
+            totalFeesArea.innerHTML = html;
+        }
+
         document.getElementById("today-fee").textContent = todayFee.toLocaleString();
     }
 
@@ -108,6 +144,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }).join('');
 
+            // 選択したブランドに対応する割引を表示
+            const discountsArea = document.getElementById("discounts-area");
+            const brandDiscounts = discounts.filter(d => d.plan_brand_ids.includes(brandId));
+
+            if (brandDiscounts.length === 0) {
+                discountsArea.innerHTML = '<p>このブランドで使える割引はありません</p>';
+            } else {
+                discountsArea.innerHTML = brandDiscounts.map(discount => `
+                    <div class="plan-card">
+                        <label>
+                            <input type="checkbox" name="discounts[]" value="${discount.id}"
+                                data-price="${discount.amount}"
+                                data-duration="${discount.duration_months || ''}">
+                            ${discount.name} -¥${discount.amount.toLocaleString()}/月
+                            ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
+                        </label>
+                    </div>
+                `).join('');
+            }
             calcTotal();
         });
     });

@@ -5,6 +5,7 @@
   <button class="tab-btn" data-tab="subscription">サブスクリプション</button>
   <button class="tab-btn" data-tab="option">オプション</button>
   <button class="tab-btn" data-tab="device">機種</button>
+  <button class="tab-btn" data-tab="discount">割引</button>
 </div>
 
 <%# 料金プランタブ %>
@@ -87,9 +88,17 @@
   <% end %>
 </div>
 
+<%# 割引タブ %>
+<div class="tab-content" id="tab-discount">
+  <h2>割引を選択</h2>
+  <div id="discounts-area">
+    <p>先に料金プランタブでブランドを選択してください</p>
+  </div>
+</div>
+
 <%# 合計金額 %>
 <div class="total">
-  <h2>月額合計：¥<span id="total-fee">0</span></h2>
+  <div id="total-fees"></div>
   <h2>当日払う料金：¥<span id="today-fee">0</span></h2>
 </div>
 
@@ -100,6 +109,16 @@
       plans: b.plans.map { |p|
         { id: p.id, name: p.name, monthly_fee: p.monthly_fee, category: p.category }
       }
+    }
+  }.to_json %>;
+
+  const discounts = <%= raw @discounts.map { |d|
+    {
+      id: d.id,
+      name: d.name,
+      amount: d.amount,
+      duration_months: d.duration_months,
+      plan_brand_ids: d.plan_brand_ids
     }
   }.to_json %>;
 </script>

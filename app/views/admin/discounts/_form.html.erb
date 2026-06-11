@@ -1,0 +1,41 @@
+<%= form_with model: [:admin, discount] do |f| %>
+  <% if discount.errors.any? %>
+    <ul>
+      <% discount.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, '割引名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :plan_brand_ids, '対象ブランド（複数選択可）' %>
+    <%= f.collection_check_boxes :plan_brand_ids, @plan_brands, :id, :name do |b| %>
+      <div>
+        <%= b.check_box %>
+        <%= b.label %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :amount, '割引額/月' %>
+    <%= f.number_field :amount %>
+  </div>
+
+  <div>
+    <%= f.label :duration_months, '適用期間（ヶ月）※空欄で永年' %>
+    <%= f.number_field :duration_months %>
+  </div>
+
+  <div>
+    <%= f.label :description, '説明' %>
+    <%= f.text_area :description %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

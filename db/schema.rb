@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_11_044209) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_11_105450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,24 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_044209) do
     t.datetime "updated_at", null: false
     t.index ["device_grade_id"], name: "index_devices_on_device_grade_id"
     t.index ["maker_id"], name: "index_devices_on_maker_id"
+  end
+
+  create_table "discount_plan_brands", force: :cascade do |t|
+    t.bigint "discount_id", null: false
+    t.bigint "plan_brand_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discount_id"], name: "index_discount_plan_brands_on_discount_id"
+    t.index ["plan_brand_id"], name: "index_discount_plan_brands_on_plan_brand_id"
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.string "name"
+    t.integer "amount"
+    t.integer "duration_months"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "makers", force: :cascade do |t|
@@ -89,6 +107,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_044209) do
 
   add_foreign_key "devices", "device_grades"
   add_foreign_key "devices", "makers"
+  add_foreign_key "discount_plan_brands", "discounts"
+  add_foreign_key "discount_plan_brands", "plan_brands"
   add_foreign_key "plan_brand_plans", "plan_brands"
   add_foreign_key "plan_brand_plans", "plans"
 end

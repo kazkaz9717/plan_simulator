@@ -6,5 +6,6 @@ class SimulationsController < ApplicationController
     @subscriptions = Subscription.all
     @options = Option.all
     @devices = Device.all.includes(:maker, :device_grade)
+    @discounts = Discount.all
   end
 end
