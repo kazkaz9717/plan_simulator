@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_10_105306) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_11_044209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,29 +61,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_10_105306) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "plan_categories", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "plan_combinations", force: :cascade do |t|
-    t.bigint "data_plan_id", null: false
-    t.bigint "voice_plan_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["data_plan_id"], name: "index_plan_combinations_on_data_plan_id"
-    t.index ["voice_plan_id"], name: "index_plan_combinations_on_voice_plan_id"
-  end
-
   create_table "plans", force: :cascade do |t|
-    t.bigint "plan_category_id", null: false
     t.string "name"
     t.integer "monthly_fee"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["plan_category_id"], name: "index_plans_on_plan_category_id"
+    t.string "category"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -107,7 +91,4 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_10_105306) do
   add_foreign_key "devices", "makers"
   add_foreign_key "plan_brand_plans", "plan_brands"
   add_foreign_key "plan_brand_plans", "plans"
-  add_foreign_key "plan_combinations", "plans", column: "data_plan_id"
-  add_foreign_key "plan_combinations", "plans", column: "voice_plan_id"
-  add_foreign_key "plans", "plan_categories"
 end

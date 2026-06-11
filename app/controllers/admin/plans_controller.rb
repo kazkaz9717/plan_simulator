@@ -5,13 +5,11 @@ class Admin::PlansController < Admin::BaseController
     if params[:plan_brand_id].present?
       @plans = Plan.joins(:plan_brand_plans)
                   .where(plan_brand_plans: { plan_brand_id: params[:plan_brand_id] })
-                  .includes(:plan_category, :plan_brands)
-      @plans += Plan.where.missing(:plan_brand_plans).includes(:plan_category, :plan_brands)
+                  .includes(:plan_brands)
     else
-      @plans = Plan.all.includes(:plan_category, :plan_brands)
+      @plans = Plan.all.includes(:plan_brands)
     end
     @plan_brands = PlanBrand.all
-    @plan_categories = PlanCategory.all
   end
 
   def new
@@ -54,6 +52,6 @@ class Admin::PlansController < Admin::BaseController
   end
 
   def plan_params
-    params.require(:plan).permit(:name, :monthly_fee, :description, :plan_category_id, plan_brand_ids: [])
+    params.require(:plan).permit(:name, :monthly_fee, :description, :category, plan_brand_ids: [])
   end
 end

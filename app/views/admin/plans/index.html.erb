@@ -11,11 +11,11 @@
   <% end %>
 </div>
 
-<% @plan_categories.each do |category| %>
-  <% plans_in_category = @plans.select { |p| p.plan_category_id == category.id } %>
+<% Plan::CATEGORIES.each do |category| %>
+  <% plans_in_category = @plans.select { |p| p.category == category } %>
   <% next if plans_in_category.empty? %>
 
-  <h2>▼ <%= category.name %></h2>
+  <h2>▼ <%= category %></h2>
   <table>
     <thead>
       <tr>

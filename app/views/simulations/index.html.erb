@@ -9,20 +9,16 @@
 
 <%# 料金プランタブ %>
 <div class="tab-content active" id="tab-plan">
-  <h2>料金プランを選択</h2>
-  <% @data_plans.each do |plan| %>
-    <div class="plan-card">
-      <label>
-        <input type="radio" name="data_plan" value="<%= plan.id %>"
-               data-price="<%= plan.monthly_fee %>">
-        <%= plan.name %> ¥<%= number_with_delimiter(plan.monthly_fee) %>/月
-      </label>
-    </div>
+  <h2>ブランドを選択</h2>
+  <% @plan_brands.each do |brand| %>
+    <label>
+      <input type="radio" name="plan_brand" value="<%= brand.id %>">
+      <%= brand.name %>
+    </label>
   <% end %>
 
-  <h3>音声通話プラン</h3>
-  <div id="voice-plans">
-    <p>先にデータプランを選択してください</p>
+  <div id="plans-area">
+    <p>ブランドを選択してください</p>
   </div>
 </div>
 
@@ -98,6 +94,12 @@
 </div>
 
 <script>
-  const planCombinations = <%= raw @plan_combinations.to_json %>;
-  const voicePlans = <%= raw @voice_plans.to_json %>;
+  const plansByBrand = <%= raw @plan_brands.map { |b|
+    {
+      id: b.id,
+      plans: b.plans.map { |p|
+        { id: p.id, name: p.name, monthly_fee: p.monthly_fee, category: p.category }
+      }
+    }
+  }.to_json %>;
 </script>

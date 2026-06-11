@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const voicePlan = document.querySelector('input[name="voice_plan"]:checked');
         if (voicePlan) total += parseInt(voicePlan.dataset.price);
 
+        // キッズケータイプラン
+        const kidsPlan = document.querySelector('input[name="kids_plan"]:checked');
+        if (kidsPlan) total += parseInt(kidsPlan.dataset.price);
+
         // サブスクリプション
         document.querySelectorAll('input[name="subscriptions[]"]:checked').forEach(el => {
             total += parseInt(el.dataset.price);
@@ -74,27 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // データプラン選択時に音声プランを絞り込む
-
-    document.querySelectorAll('input[name="data_plan"]').forEach(el => {
+    // ブランド選択時にプランを表示
+    document.querySelectorAll('input[name="plan_brand"]').forEach(el => {
         el.addEventListener("change", () => {
-            const dataplanId = parseInt(el.value);
-            const validVoicePlanIds = planCombinations
-                .filter(c => c.data_plan_id === dataplanId)
-                .map(c => c.voice_plan_id);
+            const brandId = parseInt(el.value);
+            const brand = plansByBrand.find(b => b.id === brandId);
+            const plansArea = document.getElementById("plans-area");
 
-            const voicePlanArea = document.getElementById("voice-plans");
+            const categories = [
+                { name: 'データプラン', inputName: 'data_plan' },
+                { name: '音声通話プラン', inputName: 'voice_plan' },
+                { name: 'キッズケータイプラン', inputName: 'kids_plan' }
+            ];
 
-            voicePlanArea.innerHTML = validVoicePlanIds.map(id => {
-                const plan = voicePlans.find(p => p.id === id);
+            plansArea.innerHTML = categories.map(category => {
+                const plans = brand.plans.filter(p => p.category === category.name);
+                if (plans.length === 0) return '';
+
                 return `
-          <div class="plan-card">
-            <label>
-              <input type="radio" name="voice_plan" value="${plan.id}" data-price="${plan.monthly_fee}">
-              ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
-            </label>
-          </div>
-        `;
+                    <h3>${category.name}</h3>
+                    ${plans.map(plan => `
+                        <div class="plan-card">
+                            <label>
+                                <input type="radio" name="${category.inputName}" value="${plan.id}" data-price="${plan.monthly_fee}">
+                                ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
+                            </label>
+                        </div>
+                    `).join('')}
+                `;
             }).join('');
 
             calcTotal();

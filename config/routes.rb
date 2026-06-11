@@ -14,8 +14,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :plan_brands
     resources :plans
-    resources :plan_categories
-    resources :plan_combinations, only: [:index, :new, :create, :destroy]
     resources :subscriptions
     resources :options
     resources :makers
