@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // ページ読み込み時に選択状態をリセット
+    document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
+        el.checked = false;
+    });
+    document.querySelectorAll('.installment-select').forEach(el => {
+        el.value = '1';
+    });
+
     // タブ切り替え
     const tabBtns = document.querySelectorAll(".tab-btn");
     const tabContents = document.querySelectorAll(".tab-content");
@@ -61,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 割引（期間別に集計）
         const selectedDiscounts = [];
-        document.querySelectorAll('input[name="discounts[]"]:checked').forEach(el => {
+        document.querySelectorAll('input[name="discounts[]"]:checked, .discount-radio:checked').forEach(el => {
             selectedDiscounts.push({
                 amount: parseInt(el.dataset.price),
                 duration: el.dataset.duration ? parseInt(el.dataset.duration) : null
@@ -75,24 +83,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (durations.length === 0) {
             // 期間限定割引なし：1行表示
-            const permanentDiscount = discounts.reduce((sum, d) => sum + d.amount, 0);
-            totalFeesArea.innerHTML = `<h2>月額合計：¥${(baseTotal - permanentDiscount).toLocaleString()}</h2>`;
+            const permanentDiscount = selectedDiscounts.reduce((sum, d) => sum + d.amount, 0);  // ← 修正①
+            totalFeesArea.innerHTML = `<h2>月額合計：¥${Math.max(0, baseTotal - permanentDiscount).toLocaleString()}</h2>`;
         } else {
             // 期間限定割引あり：段階表示
             let html = '';
             let prevMonth = 0;
 
             durations.forEach(duration => {
-                const activeDiscount = discounts
+                const activeDiscount = selectedDiscounts  // ← 修正②
                     .filter(d => d.duration === null || d.duration >= duration)
                     .reduce((sum, d) => sum + d.amount, 0);
-                html += `<h2>月額合計（${prevMonth + 1}〜${duration}ヶ月目）：¥${(baseTotal - activeDiscount).toLocaleString()}</h2>`;
+                html += `<h2>月額合計（${prevMonth + 1}〜${duration}ヶ月目）：¥${Math.max(0, baseTotal - activeDiscount).toLocaleString()}</h2>`;
                 prevMonth = duration;
             });
 
             // 期間終了後
-            const permanentDiscount = discounts.filter(d => d.duration === null).reduce((sum, d) => sum + d.amount, 0);
-            html += `<h2>月額合計（${prevMonth + 1}ヶ月目以降）：¥${(baseTotal - permanentDiscount).toLocaleString()}</h2>`;
+            const permanentDiscount = selectedDiscounts.filter(d => d.duration === null).reduce((sum, d) => sum + d.amount, 0);  // ← 修正③
+            html += `<h2>月額合計（${prevMonth + 1}ヶ月目以降）：¥${Math.max(0, baseTotal - permanentDiscount).toLocaleString()}</h2>`;
 
             totalFeesArea.innerHTML = html;
         }
@@ -151,17 +159,55 @@ document.addEventListener("DOMContentLoaded", () => {
             if (brandDiscounts.length === 0) {
                 discountsArea.innerHTML = '<p>このブランドで使える割引はありません</p>';
             } else {
-                discountsArea.innerHTML = brandDiscounts.map(discount => `
-                    <div class="plan-card">
-                        <label>
-                            <input type="checkbox" name="discounts[]" value="${discount.id}"
-                                data-price="${discount.amount}"
-                                data-duration="${discount.duration_months || ''}">
-                            ${discount.name} -¥${discount.amount.toLocaleString()}/月
-                            ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
-                        </label>
-                    </div>
-                `).join('');
+                // グループごとに分類
+                const grouped = {};
+                const standalone = [];
+
+                brandDiscounts.forEach(d => {
+                    if (d.group_name) {
+                        if (!grouped[d.group_name]) grouped[d.group_name] = [];
+                        grouped[d.group_name].push(d);
+                    } else {
+                        standalone.push(d);
+                    }
+                });
+
+                let html = '';
+
+                // グループ割引（ラジオボタン）
+                Object.keys(grouped).forEach(groupName => {
+                    html += `<h3>${groupName}（いずれか1つ）</h3>`;
+                    html += grouped[groupName].map(discount => `
+                        <div class="plan-card">
+                            <label>
+                                <input type="radio" name="discount_group_${groupName}" value="${discount.id}"
+                                    class="discount-radio"
+                                    data-price="${discount.amount}"
+                                    data-duration="${discount.duration_months || ''}">
+                                ${discount.name} -¥${discount.amount.toLocaleString()}/月
+                                ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
+                            </label>
+                        </div>
+                    `).join('');
+                });
+
+                // 単独割引（チェックボックス）
+                if (standalone.length > 0) {
+                    html += '<h3>その他の割引</h3>';
+                    html += standalone.map(discount => `
+                        <div class="plan-card">
+                            <label>
+                                <input type="checkbox" name="discounts[]" value="${discount.id}"
+                                    data-price="${discount.amount}"
+                                    data-duration="${discount.duration_months || ''}">
+                                ${discount.name} -¥${discount.amount.toLocaleString()}/月
+                                ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
+                            </label>
+                        </div>
+                    `).join('');
+                }
+
+                discountsArea.innerHTML = html;
             }
             calcTotal();
         });

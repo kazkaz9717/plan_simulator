@@ -2,7 +2,14 @@ class Admin::DiscountsController < Admin::BaseController
   before_action :set_discount, only: [:edit, :update, :destroy]
 
   def index
-    @discounts = Discount.all.includes(:plan_brands)
+    if params[:plan_brand_id].present?
+      @discounts = Discount.joins(:discount_plan_brands)
+                          .where(discount_plan_brands: { plan_brand_id: params[:plan_brand_id] })
+                          .includes(:plan_brands)
+    else
+      @discounts = Discount.all.includes(:plan_brands)
+    end
+    @plan_brands = PlanBrand.all
   end
 
   def new
@@ -45,6 +52,6 @@ class Admin::DiscountsController < Admin::BaseController
   end
 
   def discount_params
-    params.require(:discount).permit(:name, :amount, :duration_months, :description, plan_brand_ids: [])
+     params.require(:discount).permit(:name, :amount, :duration_months, :description, :group_name, plan_brand_ids: [])
   end
 end

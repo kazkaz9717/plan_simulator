@@ -13,6 +13,11 @@
   </div>
 
   <div>
+    <%= f.label :group_name, 'グループ名（同じグループ内は1つのみ選択可）※空欄で単独割引' %>
+    <%= f.text_field :group_name %>
+  </div>
+
+  <div>
     <%= f.label :plan_brand_ids, '対象ブランド（複数選択可）' %>
     <%= f.collection_check_boxes :plan_brand_ids, @plan_brands, :id, :name do |b| %>
       <div>

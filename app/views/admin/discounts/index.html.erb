@@ -1,10 +1,22 @@
 <h1>割引管理</h1>
 <%= link_to '新規追加', new_admin_discount_path %>
 
+<%# ブランドタブ %>
+<div class="tabs">
+  <%= link_to 'すべて', admin_discounts_path,
+      class: params[:plan_brand_id].blank? ? 'tab-btn active' : 'tab-btn' %>
+  <% @plan_brands.each do |brand| %>
+    <%= link_to brand.name, admin_discounts_path(plan_brand_id: brand.id),
+        class: params[:plan_brand_id] == brand.id.to_s ? 'tab-btn active' : 'tab-btn' %>
+  <% end %>
+</div>
+
 <table>
   <thead>
     <tr>
       <th>割引名</th>
+      <th>グループ</th>
+      <th>対象ブランド</th>
       <th>割引額/月</th>
       <th>適用期間</th>
       <th>説明</th>
@@ -15,6 +27,7 @@
     <% @discounts.each do |discount| %>
       <tr>
         <td><%= discount.name %></td>
+        <td><%= discount.group_name %></td>
         <td><%= discount.plan_brands.map(&:name).join(', ') %></td>
         <td>¥<%= number_with_delimiter(discount.amount) %></td>
         <td><%= discount.duration_months ? "#{discount.duration_months}ヶ月間" : '永年' %></td>
