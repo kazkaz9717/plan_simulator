@@ -2,7 +2,8 @@ class Admin::DevicesController < Admin::BaseController
   before_action :set_device, only: [:edit, :update, :destroy]
 
   def index
-    @devices = Device.all.includes(:maker)
+    @devices = Device.includes(:maker).by_maker(params[:maker_id]).default_sorted
+    @makers = Maker.all
   end
 
   def new

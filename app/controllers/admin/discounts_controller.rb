@@ -5,9 +5,9 @@ class Admin::DiscountsController < Admin::BaseController
     if params[:plan_brand_id].present?
       @discounts = Discount.joins(:discount_plan_brands)
                           .where(discount_plan_brands: { plan_brand_id: params[:plan_brand_id] })
-                          .includes(:plan_brands)
+                          .includes(:plan_brands).amount_desc
     else
-      @discounts = Discount.all.includes(:plan_brands)
+      @discounts = Discount.all.includes(:plan_brands).amount_desc
     end
     @plan_brands = PlanBrand.all
   end

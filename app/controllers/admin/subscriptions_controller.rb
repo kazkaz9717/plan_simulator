@@ -2,7 +2,7 @@ class Admin::SubscriptionsController < Admin::BaseController
   before_action :set_subscription, only: [:edit, :update, :destroy]
 
   def index
-    @subscriptions = Subscription.all
+    @subscriptions = Subscription.all.price_desc
   end
 
   def new

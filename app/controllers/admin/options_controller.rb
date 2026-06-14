@@ -2,7 +2,7 @@ class Admin::OptionsController < Admin::BaseController
   before_action :set_option, only: [:edit, :update, :destroy]
 
   def index
-    @options = Option.all
+    @options = Option.all.price_desc
   end
 
   def new

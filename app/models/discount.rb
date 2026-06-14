@@ -3,6 +3,8 @@ class Discount < ApplicationRecord
   has_many :plan_brands, through: :discount_plan_brands
 
   before_save { self.group_name = nil if group_name.blank? }
+  
+  scope :amount_desc, -> { order(amount: :desc) }
 
   validates :name, presence: true, uniqueness: true
   validates :amount, presence: true, numericality: { greater_than: 0 }

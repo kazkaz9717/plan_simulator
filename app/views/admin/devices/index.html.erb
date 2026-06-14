@@ -1,11 +1,14 @@
 <h1>機種管理</h1>
 <%= link_to '新規追加', new_admin_device_path %>
 
-<div>
-  並び替え：
-  <%= link_to '発売日順', admin_devices_path(sort: 'release_date') %>
-  <%= link_to '価格順', admin_devices_path(sort: 'price') %>
-  <%= link_to 'メーカー別', admin_devices_path(sort: 'maker') %>
+<%# メーカータブ %>
+<div class="tabs">
+  <%= link_to 'すべて', admin_devices_path,
+      class: params[:maker_id].blank? ? 'tab-btn active' : 'tab-btn' %>
+  <% @makers.each do |maker| %>
+    <%= link_to maker.name, admin_devices_path(maker_id: maker.id),
+        class: params[:maker_id] == maker.id.to_s ? 'tab-btn active' : 'tab-btn' %>
+  <% end %>
 </div>
 
 <table>
