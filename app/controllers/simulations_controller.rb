@@ -5,7 +5,7 @@ class SimulationsController < ApplicationController
     @plan_brands = PlanBrand.all.includes(plans: :plan_brands)
     @subscriptions = Subscription.all
     @options = Option.all
-    @devices = Device.all.includes(:maker, :device_grade)
+    @devices = Device.all.includes(:maker)
     @discounts = Discount.all.includes(:plan_brands)
   end
 end

@@ -1,12 +1,19 @@
 <h1>機種管理</h1>
 <%= link_to '新規追加', new_admin_device_path %>
 
+<div>
+  並び替え：
+  <%= link_to '発売日順', admin_devices_path(sort: 'release_date') %>
+  <%= link_to '価格順', admin_devices_path(sort: 'price') %>
+  <%= link_to 'メーカー別', admin_devices_path(sort: 'maker') %>
+</div>
+
 <table>
   <thead>
     <tr>
       <th>機種名</th>
       <th>メーカー</th>
-      <th>グレード</th>
+      <th>発売日</th>
       <th>価格</th>
       <th>操作</th>
     </tr>
@@ -16,7 +23,7 @@
       <tr>
         <td><%= device.name %></td>
         <td><%= device.maker.name %></td>
-        <td><%= device.device_grade.name %></td>
+        <td><%= device.release_date %></td>
         <td>¥<%= number_with_delimiter(device.price) %></td>
         <td>
           <%= link_to '編集', edit_admin_device_path(device) %>

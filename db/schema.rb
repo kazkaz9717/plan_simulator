@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_14_021301) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_025629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,12 +22,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_021301) do
 
   create_table "devices", force: :cascade do |t|
     t.bigint "maker_id", null: false
-    t.bigint "device_grade_id", null: false
     t.string "name"
     t.integer "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["device_grade_id"], name: "index_devices_on_device_grade_id"
+    t.date "release_date"
     t.index ["maker_id"], name: "index_devices_on_maker_id"
   end
 
@@ -101,7 +100,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_14_021301) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
-  add_foreign_key "devices", "device_grades"
   add_foreign_key "devices", "makers"
   add_foreign_key "discount_plan_brands", "discounts"
   add_foreign_key "discount_plan_brands", "plan_brands"

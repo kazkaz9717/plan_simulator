@@ -71,7 +71,7 @@
         <input type="radio" name="device" value="<%= device.id %>"
                data-price="<%= device.price %>">
         <%= device.name %>
-        （<%= device.maker.name %> / <%= device.device_grade.name %>）
+        （<%= device.maker.name %>）
         ¥<%= number_with_delimiter(device.price) %>
       </label>
       <div>

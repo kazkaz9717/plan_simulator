@@ -2,13 +2,12 @@ class Admin::DevicesController < Admin::BaseController
   before_action :set_device, only: [:edit, :update, :destroy]
 
   def index
-    @devices = Device.all.includes(:maker, :device_grade)
+    @devices = Device.all.includes(:maker)
   end
 
   def new
     @device = Device.new
     @makers = Maker.all
-    @device_grades = DeviceGrade.all
   end
 
   def create
@@ -17,14 +16,12 @@ class Admin::DevicesController < Admin::BaseController
       redirect_to admin_devices_path, notice: '機種を追加しました'
     else
       @makers = Maker.all
-      @device_grades = DeviceGrade.all
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
     @makers = Maker.all
-    @device_grades = DeviceGrade.all
   end
 
   def update
@@ -32,7 +29,6 @@ class Admin::DevicesController < Admin::BaseController
       redirect_to admin_devices_path, notice: '機種を更新しました'
     else
       @makers = Maker.all
-      @device_grades = DeviceGrade.all
       render :edit, status: :unprocessable_entity
     end
   end
@@ -49,6 +45,6 @@ class Admin::DevicesController < Admin::BaseController
   end
 
   def device_params
-    params.require(:device).permit(:name, :price, :maker_id, :device_grade_id)
+    params.require(:device).permit(:name, :price, :maker_id, :release_date)
   end
 end

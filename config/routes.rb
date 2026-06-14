@@ -20,7 +20,6 @@ Rails.application.routes.draw do
     resources :subscriptions
     resources :options
     resources :makers
-    resources :device_grades
     resources :devices
     resources :discounts
     resources :users
