@@ -55,15 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // 機種（分割・一括計算）
-        const device = document.querySelector('input[name="device"]:checked');
-        if (device) {
-            const price = parseInt(device.dataset.price);
-            const installment = parseInt(device.closest('.plan-card').querySelector('.installment-select').value);
+        // 機種（保持した変数で計算）
+        if (selectedDeviceId) {
+            const installment = parseInt(selectedInstallment);
             if (installment === 1) {
-                todayFee += price;
+                todayFee += selectedDevicePrice;
             } else {
-                baseTotal += Math.ceil(price / installment);
+                baseTotal += Math.ceil(selectedDevicePrice / installment);
             }
         }
 
@@ -111,6 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // イベントリスナー
     document.addEventListener("change", calcTotal);
 
+    // 選択中の機種を保持する変数
+    let selectedDeviceId = null;
+    let selectedDevicePrice = 0;
+    let selectedInstallment = '1';
+
     // 機種クリアボタン
     const clearDeviceBtn = document.getElementById("clear-device");
     if (clearDeviceBtn) {
@@ -118,6 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('input[name="device"]').forEach(el => {
                 el.checked = false;
             });
+            selectedDeviceId = null;
+            selectedDevicePrice = 0;
+            selectedInstallment = '1';
             calcTotal();
         });
     }
@@ -212,4 +218,57 @@ document.addEventListener("DOMContentLoaded", () => {
             calcTotal();
         });
     });
+
+    // メーカー選択時に機種を表示
+    document.querySelectorAll('input[name="device_maker"]').forEach(el => {
+        el.addEventListener("change", () => {
+            const makerId = parseInt(el.value);
+            const maker = devicesByMaker.find(m => m.id === makerId);
+            const devicesArea = document.getElementById("devices-area");
+
+            if (!maker || maker.devices.length === 0) {
+                devicesArea.innerHTML = '<p>このメーカーの機種はありません</p>';
+            } else {
+                devicesArea.innerHTML = maker.devices.map(device => `
+                    <div class="plan-card">
+                        <label>
+                            <input type="radio" name="device" value="${device.id}" data-price="${device.price}"
+                                ${selectedDeviceId === device.id ? 'checked' : ''}>
+                            ${device.name}（${device.maker_name}） ¥${device.price.toLocaleString()}
+                        </label>
+                        <div>
+                            分割回数：
+                            <select class="installment-select" data-price="${device.price}">
+                                <option value="1" ${selectedInstallment === '1' ? 'selected' : ''}>一括</option>
+                                <option value="12" ${selectedInstallment === '12' ? 'selected' : ''}>12回</option>
+                                <option value="24" ${selectedInstallment === '24' ? 'selected' : ''}>24回</option>
+                                <option value="36" ${selectedInstallment === '36' ? 'selected' : ''}>36回</option>
+                                <option value="48" ${selectedInstallment === '48' ? 'selected' : ''}>48回</option>
+                            </select>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            calcTotal();
+        });
+    });
+
+    // 機種選択・分割回数の変更を記憶
+    document.addEventListener("change", (e) => {
+        if (e.target.name === "device") {
+            selectedDeviceId = parseInt(e.target.value);
+            selectedDevicePrice = parseInt(e.target.dataset.price);
+            const select = e.target.closest('.plan-card').querySelector('.installment-select');
+            selectedInstallment = select.value;
+            calcTotal();
+        }
+        if (e.target.classList.contains("installment-select")) {
+            const deviceRadio = e.target.closest('.plan-card').querySelector('input[name="device"]');
+            if (deviceRadio && deviceRadio.checked) {
+                selectedInstallment = e.target.value;
+                calcTotal();
+            }
+        }
+    });
+
 });

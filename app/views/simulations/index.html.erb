@@ -63,29 +63,19 @@
 
 <%# 機種タブ %>
 <div class="tab-content" id="tab-device">
-  <h2>機種を選択</h2>
-  <button type="button" id="clear-device">選択をクリア</button>
-  <% @devices.each do |device| %>
-    <div class="plan-card">
-      <label>
-        <input type="radio" name="device" value="<%= device.id %>"
-               data-price="<%= device.price %>">
-        <%= device.name %>
-        （<%= device.maker.name %>）
-        ¥<%= number_with_delimiter(device.price) %>
-      </label>
-      <div>
-        分割回数：
-        <select class="installment-select" data-price="<%= device.price %>">
-          <option value="1">一括</option>
-          <option value="12">12回</option>
-          <option value="24">24回</option>
-          <option value="36">36回</option>
-          <option value="48">48回</option>
-        </select>
-      </div>
-    </div>
+  <h2>メーカーを選択</h2>
+  <% @makers.each do |maker| %>
+    <label>
+      <input type="radio" name="device_maker" value="<%= maker.id %>">
+      <%= maker.name %>
+    </label>
   <% end %>
+
+  <button type="button" id="clear-device">機種の選択をクリア</button>
+
+  <div id="devices-area">
+    <p>メーカーを選択してください</p>
+  </div>
 </div>
 
 <%# 割引タブ %>
@@ -122,4 +112,13 @@
       plan_brand_ids: d.plan_brand_ids
     }
   }.to_json %>;
+
+  const devicesByMaker = <%= raw @makers.map { |m|
+  {
+    id: m.id,
+    devices: m.devices.map { |d|
+      { id: d.id, name: d.name, price: d.price, maker_name: m.name }
+    }
+  }
+}.to_json %>;
 </script>
