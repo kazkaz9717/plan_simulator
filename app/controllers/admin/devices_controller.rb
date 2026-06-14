@@ -49,6 +49,6 @@ class Admin::DevicesController < Admin::BaseController
   end
 
   def device_params
-    params.require(:device).permit(:name, :price, :description, :maker_id, :device_grade_id)
+    params.require(:device).permit(:name, :price, :maker_id, :device_grade_id)
   end
 end

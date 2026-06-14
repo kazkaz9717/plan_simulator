@@ -52,6 +52,6 @@ class Admin::DiscountsController < Admin::BaseController
   end
 
   def discount_params
-     params.require(:discount).permit(:name, :amount, :duration_months, :description, :group_name, plan_brand_ids: [])
+     params.require(:discount).permit(:name, :amount, :duration_months, :group_name, plan_brand_ids: [])
   end
 end

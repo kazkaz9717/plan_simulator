@@ -6,7 +6,6 @@
     <tr>
       <th>サービス名</th>
       <th>月額料金</th>
-      <th>説明</th>
       <th>操作</th>
     </tr>
   </thead>
@@ -15,7 +14,6 @@
       <tr>
         <td><%= subscription.name %></td>
         <td>¥<%= number_with_delimiter(subscription.monthly_fee) %></td>
-        <td><%= subscription.description %></td>
         <td>
           <%= link_to '編集', edit_admin_subscription_path(subscription) %>
           <%= button_to '削除', admin_subscription_path(subscription), method: :delete,

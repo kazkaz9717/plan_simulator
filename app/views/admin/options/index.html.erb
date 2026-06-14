@@ -6,7 +6,6 @@
     <tr>
       <th>オプション名</th>
       <th>価格</th>
-      <th>説明</th>
       <th>操作</th>
     </tr>
   </thead>
@@ -15,7 +14,6 @@
       <tr>
         <td><%= option.name %></td>
         <td>¥<%= number_with_delimiter(option.price) %></td>
-        <td><%= option.description %></td>
         <td>
           <%= link_to '編集', edit_admin_option_path(option) %>
           <%= button_to '削除', admin_option_path(option), method: :delete,

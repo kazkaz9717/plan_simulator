@@ -8,7 +8,6 @@
       <th>メーカー</th>
       <th>グレード</th>
       <th>価格</th>
-      <th>説明</th>
       <th>操作</th>
     </tr>
   </thead>
@@ -19,7 +18,6 @@
         <td><%= device.maker.name %></td>
         <td><%= device.device_grade.name %></td>
         <td>¥<%= number_with_delimiter(device.price) %></td>
-        <td><%= device.description %></td>
         <td>
           <%= link_to '編集', edit_admin_device_path(device) %>
           <%= button_to '削除', admin_device_path(device), method: :delete,

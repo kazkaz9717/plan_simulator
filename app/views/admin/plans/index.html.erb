@@ -22,7 +22,6 @@
         <th>プラン名</th>
         <th>ブランド</th>
         <th>月額料金</th>
-        <th>説明</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -32,7 +31,6 @@
           <td><%= plan.name %></td>
           <td><%= plan.plan_brands.map(&:name).join(', ') %></td>
           <td>¥<%= number_with_delimiter(plan.monthly_fee) %></td>
-          <td><%= plan.description %></td>
           <td>
             <%= link_to '編集', edit_admin_plan_path(plan) %>
             <%= button_to '削除', admin_plan_path(plan), method: :delete,

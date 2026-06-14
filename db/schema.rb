@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_14_021301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,7 +25,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
     t.bigint "device_grade_id", null: false
     t.string "name"
     t.integer "price"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["device_grade_id"], name: "index_devices_on_device_grade_id"
@@ -45,7 +44,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
     t.string "name"
     t.integer "amount"
     t.integer "duration_months"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "group_name"
@@ -60,7 +58,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
   create_table "options", force: :cascade do |t|
     t.string "name"
     t.integer "price"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -83,7 +80,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
   create_table "plans", force: :cascade do |t|
     t.string "name"
     t.integer "monthly_fee"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "category"
@@ -92,7 +88,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_12_180215) do
   create_table "subscriptions", force: :cascade do |t|
     t.string "name"
     t.integer "monthly_fee"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
