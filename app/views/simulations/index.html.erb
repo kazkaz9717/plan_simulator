@@ -2,10 +2,10 @@
 
 <div class="tabs">
   <button class="tab-btn active" data-tab="plan">料金プラン</button>
+  <button class="tab-btn" data-tab="discount">割引</button>
   <button class="tab-btn" data-tab="subscription">サブスクリプション</button>
   <button class="tab-btn" data-tab="option">オプション</button>
   <button class="tab-btn" data-tab="device">機種</button>
-  <button class="tab-btn" data-tab="discount">割引</button>
 </div>
 
 <%# 料金プランタブ %>
@@ -86,11 +86,8 @@
   </div>
 </div>
 
-<%# 合計金額 %>
-<div class="total">
-  <div id="total-fees"></div>
-  <h2>当日払う料金：¥<span id="today-fee">0</span></h2>
-</div>
+<%# 結果エリア（内訳付き・横並び） %>
+<div id="results-area"></div>
 
 <script>
   const plansByBrand = <%= raw @plan_brands.map { |b|

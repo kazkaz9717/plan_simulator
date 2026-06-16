@@ -27,3 +27,157 @@
     font-weight: bold;
     border-bottom: 2px solid black;
 }
+
+/* ===== 結果エリア（横並び） ===== */
+#results-area {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.result-card {
+    flex: 1 1 0;
+    min-width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+    position: relative;
+    cursor: pointer;
+}
+
+.result-card.result-active {
+    border-color: #1F4E79;
+    border-width: 2px;
+    background: #f0f6fc;
+}
+
+.result-card h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.result-breakdown {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 12px;
+}
+
+.result-breakdown div {
+    padding: 2px 0;
+}
+
+.result-total {
+    font-weight: bold;
+    font-size: 15px;
+    margin: 8px 0;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+.result-today {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+}
+
+/* カード右上の削除ボタン */
+
+.card-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: none;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* 追加カード */
+.add-card {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.add-toggle {
+    font-size: 28px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #1F4E79;
+    background: #fff;
+    color: #1F4E79;
+    cursor: pointer;
+}
+
+.add-menu {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.add-menu button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+/* ===== シミュレーションタブ ===== */
+.sim-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+#sim-tab-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.sim-tab-wrapper {
+    display: inline-flex;
+    align-items: center;
+}
+
+.sim-tab-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.sim-tab-btn.active {
+    background: #1F4E79;
+    color: #fff;
+    font-weight: bold;
+}
+
+.sim-delete-btn {
+    margin-left: 2px;
+    border: none;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+}
