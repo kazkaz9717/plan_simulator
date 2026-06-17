@@ -114,19 +114,26 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedDevicePrice = 0;
     let selectedInstallment = '1';
 
-    // 機種クリアボタン
-    const clearDeviceBtn = document.getElementById("clear-device");
-    if (clearDeviceBtn) {
-        clearDeviceBtn.addEventListener("click", () => {
-            document.querySelectorAll('input[name="device"]').forEach(el => {
-                el.checked = false;
-            });
-            selectedDeviceId = null;
-            selectedDevicePrice = 0;
-            selectedInstallment = '1';
-            calcTotal();
-        });
-    }
+    // クリアボタン（機種・割引）を全体監視で処理
+    document.addEventListener("click", (e) => {
+        const state = simulations[currentSim];
+
+        // 機種クリア
+        if (e.target.id === "clear-device") {
+            document.querySelectorAll('input[name="device"]').forEach(el => el.checked = false);
+            state.deviceId = null;
+            state.devicePrice = 0;
+            state.installment = '1';
+            renderResults();
+        }
+
+        // 割引クリア
+        if (e.target.id === "clear-discount") {
+            document.querySelectorAll('input[name="discounts[]"], .discount-radio').forEach(el => el.checked = false);
+            state.discounts = [];
+            renderResults();
+        }
+    });
 
     // ブランド選択時にプランを表示
     document.querySelectorAll('input[name="plan_brand"]').forEach(el => {

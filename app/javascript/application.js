@@ -124,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const area = document.getElementById("results-area");
         let html = simulations.map((sim, i) => buildResultCard(sim, i)).join('');
 
-        // 残りの枠を＋カードで埋める（常にMAX_SIM枠表示）
         const emptySlots = MAX_SIM - simulations.length;
         for (let i = 0; i < emptySlots; i++) {
             html += `
@@ -143,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function attachResultEvents() {
-        // カードクリックで編集対象を切り替え
         document.querySelectorAll('.result-card').forEach(card => {
             card.addEventListener("click", (e) => {
                 if (e.target.classList.contains('card-delete-btn')) return;
@@ -152,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 削除ボタン
         document.querySelectorAll('.card-delete-btn').forEach(btn => {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -167,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // ＋ボタンでメニュー開閉
         document.querySelectorAll('.add-toggle').forEach(toggle => {
             toggle.addEventListener("click", () => {
                 const menu = toggle.nextElementSibling;
@@ -175,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 空で追加
         document.querySelectorAll('.add-empty-btn').forEach(btn => {
             btn.addEventListener("click", () => {
                 if (simulations.length >= MAX_SIM) return;
@@ -185,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // コピーして追加
         document.querySelectorAll('.add-copy-btn').forEach(btn => {
             btn.addEventListener("click", () => {
                 if (simulations.length >= MAX_SIM) return;
@@ -236,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (t.name === "discounts[]" || t.classList.contains("discount-radio")) {
             state.discounts = Array.from(document.querySelectorAll('input[name="discounts[]"]:checked, .discount-radio:checked'))
                 .map(el => ({
+                    id: parseInt(el.value),
                     amount: parseInt(el.dataset.price),
                     duration: el.dataset.duration ? parseInt(el.dataset.duration) : null
                 }));
@@ -244,17 +239,24 @@ document.addEventListener("DOMContentLoaded", () => {
         renderResults();
     });
 
-    const clearDeviceBtn = document.getElementById("clear-device");
-    if (clearDeviceBtn) {
-        clearDeviceBtn.addEventListener("click", () => {
-            const state = simulations[currentSim];
+    // ===== クリアボタン（機種・割引）を全体監視で処理 =====
+    document.addEventListener("click", (e) => {
+        const state = simulations[currentSim];
+
+        if (e.target.id === "clear-device") {
             document.querySelectorAll('input[name="device"]').forEach(el => el.checked = false);
             state.deviceId = null;
             state.devicePrice = 0;
             state.installment = '1';
             renderResults();
-        });
-    }
+        }
+
+        if (e.target.id === "clear-discount") {
+            document.querySelectorAll('input[name="discounts[]"], .discount-radio').forEach(el => el.checked = false);
+            state.discounts = [];
+            renderResults();
+        }
+    });
 
     // ===== ブランド選択 =====
     document.querySelectorAll('input[name="plan_brand"]').forEach(el => {
@@ -421,11 +423,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (r) r.checked = true;
             }
             state.discounts.forEach(d => {
-                document.querySelectorAll('input[name="discounts[]"], .discount-radio').forEach(el => {
-                    const amount = parseInt(el.dataset.price);
-                    const duration = el.dataset.duration ? parseInt(el.dataset.duration) : null;
-                    if (amount === d.amount && duration === d.duration) el.checked = true;
-                });
+                const el = document.querySelector(`input[name="discounts[]"][value="${d.id}"], .discount-radio[value="${d.id}"]`);
+                if (el) el.checked = true;
             });
         } else {
             document.getElementById("plans-area").innerHTML = '<p>ブランドを選択してください</p>';

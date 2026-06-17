@@ -6,6 +6,6 @@ class SimulationsController < ApplicationController
     @subscriptions = Subscription.all.price_desc
     @options = Option.all.price_desc
     @makers = Maker.all.includes(:devices)
-    @discounts = Discount.all.includes(:plan_brands)
+    @discounts = Discount.all.includes(:plan_brands).amount_desc
   end
 end
