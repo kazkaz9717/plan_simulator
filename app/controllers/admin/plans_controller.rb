@@ -52,6 +52,6 @@ class Admin::PlansController < Admin::BaseController
   end
 
   def plan_params
-    params.require(:plan).permit(:name, :monthly_fee, :category, plan_brand_ids: [])
+    params.require(:plan).permit(:name, :monthly_fee, :group_name, plan_brand_ids: [])
   end
 end

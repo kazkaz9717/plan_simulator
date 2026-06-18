@@ -11,29 +11,34 @@
   <% end %>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>機種名</th>
-      <th>メーカー</th>
-      <th>発売日</th>
-      <th>価格</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @devices.each do |device| %>
+<% grouped = @devices.group_by(&:group_name) %>
+<% sorted_groups = grouped.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+<% sorted_groups.each do |group_name, devices_in_group| %>
+  <h2>▼ <%= group_name.presence || 'グループなし' %></h2>
+  <table>
+    <thead>
       <tr>
-        <td><%= device.name %></td>
-        <td><%= device.maker.name %></td>
-        <td><%= device.release_date %></td>
-        <td>¥<%= number_with_delimiter(device.price) %></td>
-        <td>
-          <%= link_to '編集', edit_admin_device_path(device) %>
-          <%= button_to '削除', admin_device_path(device), method: :delete,
-              data: { turbo_confirm: '本当に削除しますか？' } %>
-        </td>
+        <th>機種名</th>
+        <th>メーカー</th>
+        <th>発売日</th>
+        <th>価格</th>
+        <th>操作</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% devices_in_group.each do |device| %>
+        <tr>
+          <td><%= device.name %></td>
+          <td><%= device.maker.name %></td>
+          <td><%= device.release_date %></td>
+          <td>¥<%= number_with_delimiter(device.price) %></td>
+          <td>
+            <%= link_to '編集', edit_admin_device_path(device) %>
+            <%= button_to '削除', admin_device_path(device), method: :delete,
+                data: { turbo_confirm: '本当に削除しますか？' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

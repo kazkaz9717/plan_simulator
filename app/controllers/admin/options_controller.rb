@@ -41,6 +41,6 @@ class Admin::OptionsController < Admin::BaseController
   end
 
   def option_params
-    params.require(:option).permit(:name, :price)
+    params.require(:option).permit(:name, :price, :group_name)
   end
 end

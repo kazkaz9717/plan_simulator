@@ -13,8 +13,8 @@
   </div>
 
   <div>
-    <%= f.label :category, 'カテゴリ' %>
-    <%= f.select :category, Plan::CATEGORIES, prompt: '選択してください' %>
+    <%= f.label :group_name, 'グループ名（例：データプラン、音声通話プラン）' %>
+    <%= f.text_field :group_name %>
   </div>
 
   <div>

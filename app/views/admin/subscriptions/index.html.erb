@@ -1,25 +1,30 @@
 <h1>サブスクリプション管理</h1>
 <%= link_to '新規追加', new_admin_subscription_path %>
 
-<table>
-  <thead>
-    <tr>
-      <th>サービス名</th>
-      <th>月額料金</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @subscriptions.each do |subscription| %>
+<% grouped = @subscriptions.group_by(&:group_name) %>
+<% sorted_groups = grouped.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+<% sorted_groups.each do |group_name, subscriptions_in_group| %>
+  <h2>▼ <%= group_name.presence || 'グループなし' %></h2>
+  <table>
+    <thead>
       <tr>
-        <td><%= subscription.name %></td>
-        <td>¥<%= number_with_delimiter(subscription.monthly_fee) %></td>
-        <td>
-          <%= link_to '編集', edit_admin_subscription_path(subscription) %>
-          <%= button_to '削除', admin_subscription_path(subscription), method: :delete,
-              data: { turbo_confirm: '本当に削除しますか？' } %>
-        </td>
+        <th>サービス名</th>
+        <th>月額料金</th>
+        <th>操作</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% subscriptions_in_group.each do |subscription| %>
+        <tr>
+          <td><%= subscription.name %></td>
+          <td>¥<%= number_with_delimiter(subscription.monthly_fee) %></td>
+          <td>
+            <%= link_to '編集', edit_admin_subscription_path(subscription) %>
+            <%= button_to '削除', admin_subscription_path(subscription), method: :delete,
+                data: { turbo_confirm: '本当に削除しますか？' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

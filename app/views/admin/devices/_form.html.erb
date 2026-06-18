@@ -13,6 +13,11 @@
   </div>
 
   <div>
+    <%= f.label :group_name, 'グループ名（例：ハイエンド、スタンダード）' %>
+    <%= f.text_field :group_name %>
+  </div>
+
+  <div>
     <%= f.label :maker_id, 'メーカー' %>
     <%= f.collection_select :maker_id, @makers, :id, :name, prompt: '選択してください' %>
   </div>

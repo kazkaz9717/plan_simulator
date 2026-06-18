@@ -11,11 +11,10 @@
   <% end %>
 </div>
 
-<% Plan::CATEGORIES.each do |category| %>
-  <% plans_in_category = @plans.select { |p| p.category == category } %>
-  <% next if plans_in_category.empty? %>
-
-  <h2>▼ <%= category %></h2>
+<% grouped = @plans.group_by(&:group_name) %>
+<% sorted_groups = grouped.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+<% sorted_groups.each do |group_name, plans_in_group| %>
+  <h2>▼ <%= group_name.presence || 'グループなし' %></h2>
   <table>
     <thead>
       <tr>
@@ -26,7 +25,7 @@
       </tr>
     </thead>
     <tbody>
-      <% plans_in_category.each do |plan| %>
+      <% plans_in_group.each do |plan| %>
         <tr>
           <td><%= plan.name %></td>
           <td><%= plan.plan_brands.map(&:name).join(', ') %></td>

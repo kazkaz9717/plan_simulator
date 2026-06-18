@@ -41,6 +41,6 @@ class Admin::SubscriptionsController < Admin::BaseController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:name, :monthly_fee)
+    params.require(:subscription).permit(:name, :monthly_fee, :group_name)
   end
 end
