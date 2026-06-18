@@ -1,25 +1,28 @@
 <h1>ユーザー管理</h1>
 <%= link_to '新規追加', new_admin_user_path %>
 
-<table>
-  <thead>
-    <tr>
-      <th>ユーザー名</th>
-      <th>権限</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
+<% role_labels = { 'admin' => '管理者', 'general' => '一般' } %>
+<% grouped = @users.group_by(&:role) %>
+<% grouped.each do |role, users_in_role| %>
+  <h2>▼ <%= role_labels[role] || role %></h2>
+  <table>
+    <thead>
       <tr>
-        <td><%= user.name %></td>
-        <td><%= user.role %></td>
-        <td>
-          <%= link_to '編集', edit_admin_user_path(user) %>
-          <%= button_to '削除', admin_user_path(user), method: :delete,
-              data: { turbo_confirm: '本当に削除しますか？' } %>
-        </td>
+        <th>ユーザー名</th>
+        <th>操作</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% users_in_role.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td>
+            <%= link_to '編集', edit_admin_user_path(user) %>
+            <%= button_to '削除', admin_user_path(user), method: :delete,
+                data: { turbo_confirm: '本当に削除しますか？' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
