@@ -4,9 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return {
             brandId: null,
             makerId: null,
-            dataPlan: null,
-            voicePlan: null,
-            kidsPlan: null,
+            plans: [],
             subscriptions: [],
             options: [],
             deviceId: null,
@@ -36,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===== 金額計算（内訳付き） =====
     function calcFromState(state) {
         let planFee = 0;
-        if (state.dataPlan) planFee += state.dataPlan.price;
-        if (state.voicePlan) planFee += state.voicePlan.price;
-        if (state.kidsPlan) planFee += state.kidsPlan.price;
+        state.plans.forEach(p => planFee += p.price);
 
         let subscriptionFee = 0;
         state.subscriptions.forEach(s => subscriptionFee += s.price);
@@ -196,14 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const state = simulations[currentSim];
         const t = e.target;
 
-        if (t.name === "data_plan") {
-            state.dataPlan = { id: parseInt(t.value), price: parseInt(t.dataset.price) };
-        }
-        if (t.name === "voice_plan") {
-            state.voicePlan = { id: parseInt(t.value), price: parseInt(t.dataset.price) };
-        }
-        if (t.name === "kids_plan") {
-            state.kidsPlan = { id: parseInt(t.value), price: parseInt(t.dataset.price) };
+        if (t.classList.contains("plan-radio")) {
+            state.plans = Array.from(document.querySelectorAll('.plan-radio:checked'))
+                .map(el => ({ id: parseInt(el.value), price: parseInt(el.dataset.price) }));
         }
         if (t.name === "subscriptions[]") {
             state.subscriptions = Array.from(document.querySelectorAll('input[name="subscriptions[]"]:checked'))
@@ -264,9 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const brandId = parseInt(el.value);
             const state = simulations[currentSim];
             state.brandId = brandId;
-            state.dataPlan = null;
-            state.voicePlan = null;
-            state.kidsPlan = null;
+            state.plans = [];
             state.discounts = [];
             renderPlans(brandId);
             renderDiscounts(brandId);
@@ -279,27 +268,49 @@ document.addEventListener("DOMContentLoaded", () => {
         const plansArea = document.getElementById("plans-area");
         if (!brand) { plansArea.innerHTML = ''; return; }
 
-        const categories = [
-            { name: 'データプラン', inputName: 'data_plan' },
-            { name: '音声通話プラン', inputName: 'voice_plan' },
-            { name: 'キッズケータイプラン', inputName: 'kids_plan' }
-        ];
+        // group_nameごとにプランをまとめる
+        const grouped = {};
+        const standalone = [];
+        brand.plans.forEach(p => {
+            if (p.group_name) {
+                if (!grouped[p.group_name]) grouped[p.group_name] = [];
+                grouped[p.group_name].push(p);
+            } else {
+                standalone.push(p);
+            }
+        });
 
-        plansArea.innerHTML = categories.map(category => {
-            const plans = brand.plans.filter(p => p.category === category.name);
-            if (plans.length === 0) return '';
-            return `
-                <h3>${category.name}</h3>
-                ${plans.map(plan => `
-                    <div class="plan-card">
-                        <label>
-                            <input type="radio" name="${category.inputName}" value="${plan.id}" data-price="${plan.monthly_fee}">
-                            ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
-                        </label>
-                    </div>
-                `).join('')}
-            `;
-        }).join('');
+        let html = '';
+
+        // グループありのプラン（グループ内はラジオで1つだけ選択）
+        Object.keys(grouped).forEach(groupName => {
+            html += `<h3>${groupName}</h3>`;
+            html += grouped[groupName].map(plan => `
+                <div class="plan-card">
+                    <label>
+                        <input type="radio" name="plan_group_${groupName}" value="${plan.id}"
+                            class="plan-radio" data-price="${plan.monthly_fee}">
+                        ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
+                    </label>
+                </div>
+            `).join('');
+        });
+
+        // グループなしのプラン
+        if (standalone.length > 0) {
+            html += '<h3>その他のプラン</h3>';
+            html += standalone.map(plan => `
+                <div class="plan-card">
+                    <label>
+                        <input type="radio" name="plan_group_none" value="${plan.id}"
+                            class="plan-radio" data-price="${plan.monthly_fee}">
+                        ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        plansArea.innerHTML = html;
     }
 
     function renderDiscounts(brandId) {
@@ -410,18 +421,11 @@ document.addEventListener("DOMContentLoaded", () => {
             renderPlans(state.brandId);
             renderDiscounts(state.brandId);
 
-            if (state.dataPlan) {
-                const r = document.querySelector(`input[name="data_plan"][value="${state.dataPlan.id}"]`);
-                if (r) r.checked = true;
-            }
-            if (state.voicePlan) {
-                const r = document.querySelector(`input[name="voice_plan"][value="${state.voicePlan.id}"]`);
-                if (r) r.checked = true;
-            }
-            if (state.kidsPlan) {
-                const r = document.querySelector(`input[name="kids_plan"][value="${state.kidsPlan.id}"]`);
-                if (r) r.checked = true;
-            }
+            state.plans.forEach(p => {
+                const el = document.querySelector(`.plan-radio[value="${p.id}"]`);
+                if (el) el.checked = true;
+            });
+
             state.discounts.forEach(d => {
                 const el = document.querySelector(`input[name="discounts[]"][value="${d.id}"], .discount-radio[value="${d.id}"]`);
                 if (el) el.checked = true;

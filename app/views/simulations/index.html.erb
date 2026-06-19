@@ -10,7 +10,7 @@
 
 <%# 料金プランタブ %>
 <div class="tab-content active" id="tab-plan">
-  <h2>ブランドを選択</h2>
+  <h2>ブランドを選択<span style="color: #6B7785; font-size: 14px; font-weight: normal;">（※他ブランド選択でプランリセット）</span></h2>
   <% @plan_brands.each do |brand| %>
     <label>
       <input type="radio" name="plan_brand" value="<%= brand.id %>">
@@ -26,38 +26,48 @@
 <%# サブスクリプションタブ %>
 <div class="tab-content" id="tab-subscription">
   <h2>サブスクリプションを選択</h2>
-  <% @subscriptions.each do |subscription| %>
-    <div class="plan-card">
-      <label>
-        <input type="checkbox" name="subscriptions[]" value="<%= subscription.id %>"
-               data-price="<%= subscription.monthly_fee %>">
-        <%= subscription.name %> ¥<%= number_with_delimiter(subscription.monthly_fee) %>/月
-      </label>
-    </div>
+  <% grouped_subscriptions = @subscriptions.group_by(&:group_name) %>
+  <% sorted_groups = grouped_subscriptions.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+  <% sorted_groups.each do |group_name, subscriptions_in_group| %>
+    <h3><%= group_name.presence || 'その他' %></h3>
+    <% subscriptions_in_group.each do |subscription| %>
+      <div class="plan-card">
+        <label>
+          <input type="checkbox" name="subscriptions[]" value="<%= subscription.id %>"
+                 data-price="<%= subscription.monthly_fee %>">
+          <%= subscription.name %> ¥<%= number_with_delimiter(subscription.monthly_fee) %>/月
+        </label>
+      </div>
+    <% end %>
   <% end %>
 </div>
 
 <%# オプションタブ %>
 <div class="tab-content" id="tab-option">
   <h2>オプションを選択</h2>
-  <% @options.each do |option| %>
-    <div class="plan-card">
-      <label>
-        <input type="checkbox" name="options[]" value="<%= option.id %>"
-               data-price="<%= option.price %>">
-        <%= option.name %> ¥<%= number_with_delimiter(option.price) %>
-      </label>
-      <div>
-        分割回数：
-        <select class="installment-select" data-price="<%= option.price %>">
-          <option value="1">一括</option>
-          <option value="12">12回</option>
-          <option value="24">24回</option>
-          <option value="36">36回</option>
-          <option value="48">48回</option>
-        </select>
+  <% grouped_options = @options.group_by(&:group_name) %>
+  <% sorted_groups = grouped_options.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+  <% sorted_groups.each do |group_name, options_in_group| %>
+    <h3><%= group_name.presence || 'その他' %></h3>
+    <% options_in_group.each do |option| %>
+      <div class="plan-card">
+        <label>
+          <input type="checkbox" name="options[]" value="<%= option.id %>"
+                 data-price="<%= option.price %>">
+          <%= option.name %> ¥<%= number_with_delimiter(option.price) %>
+        </label>
+        <div>
+          分割回数：
+          <select class="installment-select" data-price="<%= option.price %>">
+            <option value="1">一括</option>
+            <option value="12">12回</option>
+            <option value="24">24回</option>
+            <option value="36">36回</option>
+            <option value="48">48回</option>
+          </select>
+        </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>
 
@@ -95,7 +105,7 @@
     {
       id: b.id,
       plans: b.plans.map { |p|
-        { id: p.id, name: p.name, monthly_fee: p.monthly_fee, category: p.category }
+        { id: p.id, name: p.name, monthly_fee: p.monthly_fee, group_name: p.group_name }
       }
     }
   }.to_json %>;
