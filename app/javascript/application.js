@@ -34,30 +34,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ===== 金額計算（内訳付き） =====
     function calcFromState(state) {
+        // 永続的な月額（プラン + サブスク）
         let planFee = 0;
         state.plans.forEach(p => planFee += p.price);
 
         let subscriptionFee = 0;
         state.subscriptions.forEach(s => subscriptionFee += s.price);
 
+        // オプション（分割は月額、一括は当日）
         let optionMonthly = 0;
         let optionToday = 0;
+        const optionInstallments = []; // {monthly, until} 分割オプションの情報
         state.options.forEach(o => {
             if (o.installment === 1) {
                 optionToday += o.price;
             } else {
-                optionMonthly += Math.ceil(o.price / o.installment);
+                const monthly = Math.ceil(o.price / o.installment);
+                optionMonthly += monthly;
+                optionInstallments.push({ monthly, until: o.installment });
             }
         });
 
+        // 機種（分割は月額、一括は当日）
         let deviceMonthly = 0;
         let deviceToday = 0;
+        let deviceInstallment = null; // {monthly, until}
         if (state.deviceId) {
             const inst = parseInt(state.installment);
             if (inst === 1) {
                 deviceToday += state.devicePrice;
             } else {
-                deviceMonthly += Math.ceil(state.devicePrice / inst);
+                const monthly = Math.ceil(state.devicePrice / inst);
+                deviceMonthly += monthly;
+                deviceInstallment = { monthly, until: inst };
             }
         }
 
@@ -65,31 +74,79 @@ document.addEventListener("DOMContentLoaded", () => {
         const baseTotal = planFee + subscriptionFee + optionMonthly + deviceMonthly;
         const todayFee = optionToday + deviceToday;
 
+        // 永続費用（分割が全て終わった後も残る月額）= プラン + サブスク
+        const permanentMonthly = planFee + subscriptionFee;
+
         return {
             planFee, subscriptionFee, optionMonthly, deviceMonthly,
-            totalDiscount, baseTotal, todayFee, discounts: state.discounts
+            totalDiscount, baseTotal, todayFee,
+            discounts: state.discounts,
+            permanentMonthly,        // プラン+サブスク（ずっと続く）
+            deviceInstallment,       // 機種の分割情報 or null
+            optionInstallments       // オプション分割の配列
         };
     }
 
-    function buildMonthlyLines(baseTotal, discounts) {
-        const durations = [...new Set(discounts.filter(d => d.duration).map(d => d.duration))].sort((a, b) => a - b);
+    // 指定した月(targetMonth)における月額を計算する
+    function monthlyFeeAt(targetMonth, r) {
+        // プラン + サブスク（永続）
+        let total = r.permanentMonthly;
 
-        if (durations.length === 0) {
-            const permanentDiscount = discounts.reduce((sum, d) => sum + d.amount, 0);
-            return `<div class="result-total">月額合計：¥${Math.max(0, baseTotal - permanentDiscount).toLocaleString()}</div>`;
+        // 機種の分割（分割期間内なら加算）
+        if (r.deviceInstallment && targetMonth <= r.deviceInstallment.until) {
+            total += r.deviceInstallment.monthly;
         }
+
+        // オプションの分割（それぞれ分割期間内なら加算）
+        r.optionInstallments.forEach(o => {
+            if (targetMonth <= o.until) {
+                total += o.monthly;
+            }
+        });
+
+        // 割引（永年 or まだ期間内なら適用）
+        const activeDiscount = r.discounts
+            .filter(d => d.duration === null || d.duration >= targetMonth)
+            .reduce((sum, d) => sum + d.amount, 0);
+
+        return Math.max(0, total - activeDiscount);
+    }
+
+    // 区切り月ごとに月額を段階表示する
+    function buildMonthlyLines(r) {
+        // お金が変わる「区切り月」を全て集める
+        const breakpoints = new Set();
+
+        // 割引の終了月
+        r.discounts.forEach(d => {
+            if (d.duration) breakpoints.add(d.duration);
+        });
+        // 機種の分割終了月
+        if (r.deviceInstallment) breakpoints.add(r.deviceInstallment.until);
+        // オプションの分割終了月
+        r.optionInstallments.forEach(o => breakpoints.add(o.until));
+
+        // 区切りがなければ1行だけ表示
+        if (breakpoints.size === 0) {
+            return `<div class="result-total">月額合計：¥${monthlyFeeAt(1, r).toLocaleString()}</div>`;
+        }
+
+        // 区切り月を昇順に並べる
+        const sorted = [...breakpoints].sort((a, b) => a - b);
 
         let html = '';
         let prevMonth = 0;
-        durations.forEach(duration => {
-            const activeDiscount = discounts
-                .filter(d => d.duration === null || d.duration >= duration)
-                .reduce((sum, d) => sum + d.amount, 0);
-            html += `<div class="result-total">月額合計（${prevMonth + 1}〜${duration}ヶ月目）：¥${Math.max(0, baseTotal - activeDiscount).toLocaleString()}</div>`;
-            prevMonth = duration;
+        sorted.forEach(month => {
+            // この区間の代表月（開始月）で月額を計算
+            const fee = monthlyFeeAt(prevMonth + 1, r);
+            html += `<div class="result-total">月額合計（${prevMonth + 1}〜${month}ヶ月目）：¥${fee.toLocaleString()}</div>`;
+            prevMonth = month;
         });
-        const permanentDiscount = discounts.filter(d => d.duration === null).reduce((sum, d) => sum + d.amount, 0);
-        html += `<div class="result-total">月額合計（${prevMonth + 1}ヶ月目以降）：¥${Math.max(0, baseTotal - permanentDiscount).toLocaleString()}</div>`;
+
+        // 全ての分割・期間限定が終わった後（永続費用のみ）
+        const finalFee = monthlyFeeAt(prevMonth + 1, r);
+        html += `<div class="result-total">月額合計（${prevMonth + 1}ヶ月目以降）：¥${finalFee.toLocaleString()}</div>`;
+
         return html;
     }
 
@@ -111,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (r.optionMonthly > 0) html += `<div>オプション(月額)：¥${r.optionMonthly.toLocaleString()}</div>`;
 
         html += '</div>';
-        html += buildMonthlyLines(r.baseTotal, r.discounts);
+        html += buildMonthlyLines(r);
         html += `<div class="result-today">当日払う料金：¥${r.todayFee.toLocaleString()}</div>`;
         html += '</div>';
         return html;
@@ -207,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 合計
         html += `<div class="detail-total">`;
-        html += buildMonthlyLines(r.baseTotal, r.discounts);
+        html += buildMonthlyLines(r);
         html += `<div class="result-today">当日払う料金：¥${r.todayFee.toLocaleString()}</div>`;
         html += `</div>`;
 
