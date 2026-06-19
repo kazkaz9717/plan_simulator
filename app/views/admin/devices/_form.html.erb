@@ -32,5 +32,5 @@
     <%= f.number_field :price %>
   </div>
 
-  <%= f.submit %>
+  <%= f.submit @device.persisted? ? '更新する' : '登録する' %>
 <% end %>

@@ -508,6 +508,25 @@ form .plan-card label,
     margin-bottom: 0;
 }
 
+/* チェックボックスリスト（対象ブランドなど）を横並びに */
+form input[type="checkbox"]+label {
+    display: inline;
+    font-weight: normal;
+    margin-bottom: 0;
+    margin-left: 6px;
+}
+
+form input[type="checkbox"] {
+    width: auto;
+    vertical-align: middle;
+}
+
+/* フォーム下の「一覧に戻る」リンク */
+form+a {
+    display: inline-block;
+    margin-top: 16px;
+}
+
 /* ===== レスポンシブ ===== */
 @media (max-width: 768px) {
     #results-area {

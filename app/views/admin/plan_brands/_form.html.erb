@@ -12,5 +12,5 @@
     <%= f.text_field :name %>
   </div>
 
-  <%= f.submit %>
+  <%= f.submit @plan_brand.persisted? ? '更新する' : '登録する' %>
 <% end %>

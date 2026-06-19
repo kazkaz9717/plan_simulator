@@ -22,5 +22,5 @@
     <%= f.number_field :monthly_fee %>
   </div>
 
-  <%= f.submit %>
+  <%= f.submit @subscription.persisted? ? '更新する' : '登録する' %>
 <% end %>

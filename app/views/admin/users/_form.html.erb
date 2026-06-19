@@ -27,5 +27,5 @@
     <%= f.select :role, User.roles.keys.map { |r| [r, r] }, prompt: '選択してください' %>
   </div>
 
-  <%= f.submit %>
+  <%= f.submit @user.persisted? ? '更新する' : '登録する' %>
 <% end %>

@@ -37,5 +37,5 @@
     <%= f.number_field :duration_months %>
   </div>
 
-  <%= f.submit %>
+  <%= f.submit @discount.persisted? ? '更新する' : '登録する' %>
 <% end %>
