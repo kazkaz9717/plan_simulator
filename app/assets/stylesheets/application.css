@@ -618,3 +618,76 @@ td button:hover {
     color: var(--navy);
     border-bottom-color: var(--navy);
 }
+
+/* ===== 詳細エリア ===== */
+.detail-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 32px;
+    box-shadow: var(--shadow);
+}
+
+.detail-box h2 {
+    color: var(--navy);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.detail-box h3 {
+    color: var(--navy);
+    margin: 16px 0 6px;
+}
+
+.detail-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.detail-box li {
+    padding: 3px 0;
+    font-size: 15px;
+}
+
+.detail-total {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border);
+}
+
+.print-btn {
+    margin-top: 20px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.print-btn:hover {
+    background: #248277;
+}
+
+/* ===== 印刷用 ===== */
+@media print {
+
+    /* ヘッダー・タブ・選択エリア・結果カードを隠す */
+    .site-header,
+    .tabs,
+    .tab-content,
+    #results-area,
+    .print-btn {
+        display: none !important;
+    }
+
+    /* 詳細エリアだけ残す */
+    .detail-box {
+        box-shadow: none;
+        border: none;
+    }
+}

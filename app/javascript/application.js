@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             options: [],
             deviceId: null,
             devicePrice: 0,
+            deviceName: null,
             installment: '1',
             discounts: []
         };
@@ -106,8 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (r.planFee > 0) html += `<div>料金プラン：¥${r.planFee.toLocaleString()}</div>`;
         if (r.totalDiscount > 0) html += `<div>割引：△¥${r.totalDiscount.toLocaleString()}</div>`;
         if (r.subscriptionFee > 0) html += `<div>サブスク：¥${r.subscriptionFee.toLocaleString()}</div>`;
-        if (r.optionMonthly > 0) html += `<div>オプション(月額)：¥${r.optionMonthly.toLocaleString()}</div>`;
         if (r.deviceMonthly > 0) html += `<div>機種(月額)：¥${r.deviceMonthly.toLocaleString()}</div>`;
+        if (r.optionMonthly > 0) html += `<div>オプション(月額)：¥${r.optionMonthly.toLocaleString()}</div>`;
 
         html += '</div>';
         html += buildMonthlyLines(r.baseTotal, r.discounts);
@@ -135,6 +136,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
         area.innerHTML = html;
         attachResultEvents();
+        renderDetail();
+    }
+
+    // 選択中シミュレーションの詳細を表示
+    function renderDetail() {
+        const state = simulations[currentSim];
+        const r = calcFromState(state);
+        const area = document.getElementById("detail-area");
+
+        let html = `<div class="detail-box">`;
+        html += `<h2>シミュレーション${currentSim + 1} の詳細</h2>`;
+
+        // 料金プラン
+        if (state.plans.length > 0) {
+            html += `<h3>料金プラン</h3><ul>`;
+            state.plans.forEach(p => {
+                html += `<li>${p.name}　¥${p.price.toLocaleString()}/月</li>`;
+            });
+            html += `</ul>`;
+        }
+
+        // 割引
+        if (state.discounts.length > 0) {
+            html += `<h3>割引</h3><ul>`;
+            state.discounts.forEach(d => {
+                const period = d.duration ? `（${d.duration}ヶ月間）` : '（永年）';
+                html += `<li>${d.name}　-¥${d.amount.toLocaleString()}/月 ${period}</li>`;
+            });
+            html += `</ul>`;
+        }
+
+        // サブスク
+        if (state.subscriptions.length > 0) {
+            html += `<h3>サブスクリプション</h3><ul>`;
+            state.subscriptions.forEach(s => {
+                html += `<li>${s.name}　¥${s.price.toLocaleString()}/月</li>`;
+            });
+            html += `</ul>`;
+        }
+
+        // 機種
+        if (state.deviceId) {
+            const inst = parseInt(state.installment);
+            const payment = inst === 1
+                ? '一括'
+                : `${inst}回払い → ¥${Math.ceil(state.devicePrice / inst).toLocaleString()}/月`;
+            html += `<h3>機種</h3><ul>`;
+            html += `<li>${state.deviceName}　¥${state.devicePrice.toLocaleString()}（${payment}）</li>`;
+            html += `</ul>`;
+        }
+
+        // オプション
+        if (state.options.length > 0) {
+            html += `<h3>オプション</h3><ul>`;
+            state.options.forEach(o => {
+                const payment = o.installment === 1
+                    ? '一括'
+                    : `${o.installment}回払い → ¥${Math.ceil(o.price / o.installment).toLocaleString()}/月`;
+                html += `<li>${o.name}　¥${o.price.toLocaleString()}（${payment}）</li>`;
+            });
+            html += `</ul>`;
+        }
+
+        // 何も選択されていない場合
+        if (state.plans.length === 0 && state.discounts.length === 0 &&
+            state.subscriptions.length === 0 && state.options.length === 0 && !state.deviceId) {
+            html += `<p>項目が選択されていません</p>`;
+        }
+
+        // 合計
+        html += `<div class="detail-total">`;
+        html += buildMonthlyLines(r.baseTotal, r.discounts);
+        html += `<div class="result-today">当日払う料金：¥${r.todayFee.toLocaleString()}</div>`;
+        html += `</div>`;
+
+        html += `<button type="button" id="print-detail" class="print-btn">この内容を印刷する</button>`;
+        html += `</div>`;
+
+        area.innerHTML = html;
     }
 
     function attachResultEvents() {
@@ -194,22 +274,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (t.classList.contains("plan-radio")) {
             state.plans = Array.from(document.querySelectorAll('.plan-radio:checked'))
-                .map(el => ({ id: parseInt(el.value), price: parseInt(el.dataset.price) }));
+                .map(el => ({ id: parseInt(el.value), price: parseInt(el.dataset.price), name: el.dataset.name }));
         }
         if (t.name === "subscriptions[]") {
             state.subscriptions = Array.from(document.querySelectorAll('input[name="subscriptions[]"]:checked'))
-                .map(el => ({ id: parseInt(el.value), price: parseInt(el.dataset.price) }));
+                .map(el => ({ id: parseInt(el.value), price: parseInt(el.dataset.price), name: el.dataset.name }));
         }
         if (t.name === "options[]" || (t.classList.contains("installment-select") && t.closest('#tab-option'))) {
             state.options = Array.from(document.querySelectorAll('input[name="options[]"]:checked'))
                 .map(el => {
                     const inst = parseInt(el.closest('.plan-card').querySelector('.installment-select').value);
-                    return { id: parseInt(el.value), price: parseInt(el.dataset.price), installment: inst };
+                    return { id: parseInt(el.value), price: parseInt(el.dataset.price), installment: inst, name: el.dataset.name };
                 });
         }
         if (t.name === "device") {
             state.deviceId = parseInt(t.value);
             state.devicePrice = parseInt(t.dataset.price);
+            state.deviceName = t.dataset.name;
             state.installment = t.closest('.plan-card').querySelector('.installment-select').value;
         }
         if (t.classList.contains("installment-select") && t.closest('#tab-device')) {
@@ -223,7 +304,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 .map(el => ({
                     id: parseInt(el.value),
                     amount: parseInt(el.dataset.price),
-                    duration: el.dataset.duration ? parseInt(el.dataset.duration) : null
+                    duration: el.dataset.duration ? parseInt(el.dataset.duration) : null,
+                    name: el.dataset.name
                 }));
         }
 
@@ -246,6 +328,10 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('input[name="discounts[]"], .discount-radio').forEach(el => el.checked = false);
             state.discounts = [];
             renderResults();
+        }
+
+        if (e.target.id === "print-detail") {
+            window.print();
         }
     });
 
@@ -289,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="plan-card">
                     <label>
                         <input type="radio" name="plan_group_${groupName}" value="${plan.id}"
-                            class="plan-radio" data-price="${plan.monthly_fee}">
+                            class="plan-radio" data-price="${plan.monthly_fee}" data-name="${plan.name}">
                         ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
                     </label>
                 </div>
@@ -303,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="plan-card">
                     <label>
                         <input type="radio" name="plan_group_none" value="${plan.id}"
-                            class="plan-radio" data-price="${plan.monthly_fee}">
+                            class="plan-radio" data-price="${plan.monthly_fee}" data-name="${plan.name}">
                         ${plan.name} ¥${plan.monthly_fee.toLocaleString()}/月
                     </label>
                 </div>
@@ -342,7 +428,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         <input type="radio" name="discount_group_${groupName}" value="${discount.id}"
                             class="discount-radio"
                             data-price="${discount.amount}"
-                            data-duration="${discount.duration_months || ''}">
+                            data-duration="${discount.duration_months || ''}"
+                            data-name="${discount.name}">
                         ${discount.name} -¥${discount.amount.toLocaleString()}/月
                         ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
                     </label>
@@ -357,7 +444,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <label>
                         <input type="checkbox" name="discounts[]" value="${discount.id}"
                             data-price="${discount.amount}"
-                            data-duration="${discount.duration_months || ''}">
+                            data-duration="${discount.duration_months || ''}"
+                            data-name="${discount.name}">
                         ${discount.name} -¥${discount.amount.toLocaleString()}/月
                         ${discount.duration_months ? `（${discount.duration_months}ヶ月間）` : '（永年）'}
                     </label>
@@ -392,6 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="plan-card">
                 <label>
                     <input type="radio" name="device" value="${device.id}" data-price="${device.price}"
+                        data-name="${device.name}"
                         ${state.deviceId === device.id ? 'checked' : ''}>
                     ${device.name}（${device.maker_name}） ¥${device.price.toLocaleString()}
                 </label>

@@ -4,8 +4,8 @@
   <button class="tab-btn active" data-tab="plan">料金プラン</button>
   <button class="tab-btn" data-tab="discount">割引</button>
   <button class="tab-btn" data-tab="subscription">サブスクリプション</button>
-  <button class="tab-btn" data-tab="option">オプション</button>
   <button class="tab-btn" data-tab="device">機種</button>
+  <button class="tab-btn" data-tab="option">オプション</button>
 </div>
 
 <%# 料金プランタブ %>
@@ -23,6 +23,15 @@
   </div>
 </div>
 
+<%# 割引タブ %>
+<div class="tab-content" id="tab-discount">
+  <h2>割引を選択</h2>
+  <button type="button" id="clear-discount">割引の選択をクリア</button>
+  <div id="discounts-area">
+    <p>先に料金プランタブでブランドを選択してください</p>
+  </div>
+</div>
+
 <%# サブスクリプションタブ %>
 <div class="tab-content" id="tab-subscription">
   <h2>サブスクリプションを選択</h2>
@@ -34,38 +43,10 @@
       <div class="plan-card">
         <label>
           <input type="checkbox" name="subscriptions[]" value="<%= subscription.id %>"
-                 data-price="<%= subscription.monthly_fee %>">
+               data-price="<%= subscription.monthly_fee %>"
+               data-name="<%= subscription.name %>">
           <%= subscription.name %> ¥<%= number_with_delimiter(subscription.monthly_fee) %>/月
         </label>
-      </div>
-    <% end %>
-  <% end %>
-</div>
-
-<%# オプションタブ %>
-<div class="tab-content" id="tab-option">
-  <h2>オプションを選択</h2>
-  <% grouped_options = @options.group_by(&:group_name) %>
-  <% sorted_groups = grouped_options.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
-  <% sorted_groups.each do |group_name, options_in_group| %>
-    <h3><%= group_name.presence || 'その他' %></h3>
-    <% options_in_group.each do |option| %>
-      <div class="plan-card">
-        <label>
-          <input type="checkbox" name="options[]" value="<%= option.id %>"
-                 data-price="<%= option.price %>">
-          <%= option.name %> ¥<%= number_with_delimiter(option.price) %>
-        </label>
-        <div>
-          分割回数：
-          <select class="installment-select" data-price="<%= option.price %>">
-            <option value="1">一括</option>
-            <option value="12">12回</option>
-            <option value="24">24回</option>
-            <option value="36">36回</option>
-            <option value="48">48回</option>
-          </select>
-        </div>
       </div>
     <% end %>
   <% end %>
@@ -88,17 +69,41 @@
   </div>
 </div>
 
-<%# 割引タブ %>
-<div class="tab-content" id="tab-discount">
-  <h2>割引を選択</h2>
-  <button type="button" id="clear-discount">割引の選択をクリア</button>
-  <div id="discounts-area">
-    <p>先に料金プランタブでブランドを選択してください</p>
-  </div>
+<%# オプションタブ %>
+<div class="tab-content" id="tab-option">
+  <h2>オプションを選択</h2>
+  <% grouped_options = @options.group_by(&:group_name) %>
+  <% sorted_groups = grouped_options.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+  <% sorted_groups.each do |group_name, options_in_group| %>
+    <h3><%= group_name.presence || 'その他' %></h3>
+    <% options_in_group.each do |option| %>
+      <div class="plan-card">
+        <label>
+          <input type="checkbox" name="options[]" value="<%= option.id %>"
+               data-price="<%= option.price %>"
+               data-name="<%= option.name %>">
+          <%= option.name %> ¥<%= number_with_delimiter(option.price) %>
+        </label>
+        <div>
+          分割回数：
+          <select class="installment-select" data-price="<%= option.price %>">
+            <option value="1">一括</option>
+            <option value="12">12回</option>
+            <option value="24">24回</option>
+            <option value="36">36回</option>
+            <option value="48">48回</option>
+          </select>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
 </div>
 
 <%# 結果エリア（内訳付き・横並び） %>
 <div id="results-area"></div>
+
+<%# 詳細エリア %>
+<div id="detail-area"></div>
 
 <script>
   const plansByBrand = <%= raw @plan_brands.map { |b|
