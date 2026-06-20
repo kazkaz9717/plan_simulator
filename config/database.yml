@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: plan_simulator_production
-  username: plan_simulator
-  password: <%= ENV["PLAN_SIMULATOR_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
