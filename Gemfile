@@ -25,8 +25,9 @@ gem "jbuilder"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
-# net-pop の依存関係を明示（デプロイ時のエラー対策）
+# デプロイ時の依存解決エラー対策
 gem "net-pop", require: false
+gem "net-protocol", require: false
 
 # 日本語化（i18n）
 gem "rails-i18n"
