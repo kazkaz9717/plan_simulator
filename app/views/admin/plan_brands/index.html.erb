@@ -15,7 +15,7 @@
         <td>
           <%= link_to '編集', edit_admin_plan_brand_path(plan_brand) %>
           <%= button_to '削除', admin_plan_brand_path(plan_brand), method: :delete,
-              data: { turbo_confirm: '本当に削除しますか？' } %>
+              data: { turbo_confirm: "本当に削除しますか？\n\n※ブランドに紐づいたプラン・割引が一つしかない場合、\nそれらも含めて削除されます" } %>
         </td>
       </tr>
     <% end %>

@@ -30,8 +30,17 @@ class Admin::PlanBrandsController < Admin::BaseController
   end
 
   def destroy
+    # このブランドに紐づくプラン・割引のうち、
+    # 「このブランドにしか紐づいていないもの（消すと孤児になるもの）」を先に削除
+    @plan_brand.plans.each do |plan|
+      plan.destroy if plan.plan_brands.count == 1
+    end
+    @plan_brand.discounts.each do |discount|
+      discount.destroy if discount.plan_brands.count == 1
+    end
+
     @plan_brand.destroy
-    redirect_to admin_plan_brands_path, notice: 'プランブランドを削除しました'
+    redirect_to admin_plan_brands_path, notice: 'ブランドを削除しました'
   end
 
   private

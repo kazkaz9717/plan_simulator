@@ -1,3 +1,5 @@
+import "@hotwired/turbo-rails"
+
 document.addEventListener("DOMContentLoaded", () => {
     // ===== シミュレーション状態管理 =====
     function createEmptyState() {
