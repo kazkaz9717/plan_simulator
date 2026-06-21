@@ -3,23 +3,61 @@
  *= require_self
  */
 
-/* ===== デザイントークン ===== */
+/* ============================================================
+   目次
+   1.  デザイントークン（色・サイズの共通変数）
+   2.  ベース（body・見出し）
+   3.  共通ヘッダー
+   4.  フラッシュメッセージ
+   5.  シミュレーター：カテゴリタブ
+   6.  シミュレーター：選択カード
+   7.  シミュレーター：結果エリア（3枚比較）
+   8.  シミュレーター：詳細エリア
+   9.  フォーム（入力欄・ボタン）
+   10. テーブル（管理画面一覧）
+   11. 管理画面：上部ヘッダー
+   12. 管理画面：サイドバー（階層メニュー）
+   13. 管理画面：一覧の操作リンク・新規追加・タブ
+   14. レスポンシブ
+   15. 印刷用
+   ============================================================ */
+
+
+/* ============================================================
+   1. デザイントークン
+   色やサイズをここで一括管理。var(--navy) の形で全体から呼ぶ。
+   ============================================================ */
 :root {
     --navy: #1B3A5C;
+    /* 主役の紺：ヘッダー・ボタン・見出し */
     --navy-dark: #12293F;
+    /* 押下時などの濃い紺 */
     --teal: #2A9D8F;
+    /* アクセント：印刷ボタン・シミュレーターへ */
     --bg: #F7F8FA;
+    /* ページ背景 */
     --surface: #FFFFFF;
+    /* カード・テーブルの背景 */
     --text: #2D3748;
+    /* 通常の文字色 */
     --text-sub: #6B7785;
+    /* 補足の文字色 */
     --border: #E2E8F0;
+    /* 罫線・枠線 */
     --danger: #D9534F;
+    /* 削除など危険操作の赤 */
     --radius: 10px;
+    /* 角丸の標準 */
     --shadow: 0 1px 3px rgba(27, 58, 92, 0.08), 0 4px 12px rgba(27, 58, 92, 0.05);
 }
 
+
+/* ============================================================
+   2. ベース
+   ============================================================ */
 * {
     box-sizing: border-box;
+    /* 幅計算に余白・枠線を含める */
 }
 
 body {
@@ -30,80 +68,7 @@ body {
     line-height: 1.6;
 }
 
-/* ===== ヘッダー ===== */
-.site-header {
-    background: var(--navy);
-    color: #fff;
-}
-
-.header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.site-logo {
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-    text-decoration: none;
-    letter-spacing: 0.02em;
-}
-
-.site-nav {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.user-name {
-    font-size: 14px;
-    color: #cdd9e5;
-}
-
-.nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.15s;
-}
-
-.nav-link:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.nav-btn,
-.nav-btn button {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: #fff;
-    font-size: 14px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.nav-btn button {
-    border: none;
-    padding: 0;
-}
-
-.nav-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-/* ===== メイン ===== */
-.site-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 24px 64px;
-}
-
+/* 見出し（タグセレクタで全ページ共通） */
 h1 {
     font-size: 26px;
     font-weight: 700;
@@ -127,7 +92,92 @@ h3 {
     margin: 16px 0 8px;
 }
 
-/* ===== フラッシュメッセージ ===== */
+
+/* ============================================================
+   3. 共通ヘッダー
+   外側(site-header)で背景、内側(header-inner)で中央寄せ。
+   ============================================================ */
+.site-header {
+    background: var(--navy);
+    color: #fff;
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* ロゴとナビを両端へ */
+}
+
+.site-logo {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-name {
+    font-size: 14px;
+    color: #cdd9e5;
+}
+
+/* ヘッダー内リンク */
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ログアウトなどのボタン（button_toはform化されるので両方指定） */
+.nav-btn,
+.nav-btn button {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.nav-btn button {
+    border: none;
+    padding: 0;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* 一般ページの本文エリア */
+.site-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+}
+
+
+/* ============================================================
+   4. フラッシュメッセージ
+   操作後の通知。notice=成功(緑系)、alert=警告(赤系)。
+   ============================================================ */
 .flash {
     padding: 12px 16px;
     border-radius: var(--radius);
@@ -147,7 +197,11 @@ h3 {
     border: 1px solid #F0C3C1;
 }
 
-/* ===== カテゴリタブ ===== */
+
+/* ============================================================
+   5. シミュレーター：カテゴリタブ
+   下線が動くタブ。.active が選択中（JSが付与）。
+   ============================================================ */
 .tabs {
     display: flex;
     gap: 4px;
@@ -178,6 +232,7 @@ h3 {
     border-bottom-color: var(--navy);
 }
 
+/* タブ中身は通常隠し、.activeだけ表示 */
 .tab-content {
     display: none;
 }
@@ -186,7 +241,11 @@ h3 {
     display: block;
 }
 
-/* ===== 選択カード ===== */
+
+/* ============================================================
+   6. シミュレーター：選択カード
+   サブスク・オプション・JS生成の各選択項目。
+   ============================================================ */
 .plan-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -217,7 +276,7 @@ h3 {
     cursor: pointer;
 }
 
-/* ブランド・メーカー選択（タブ直下のラジオ） */
+/* ブランド・メーカー選択（タブ直下のラジオ）はピル型に */
 .tab-content>label {
     display: inline-flex;
     align-items: center;
@@ -252,7 +311,7 @@ h3 {
     color: var(--text);
 }
 
-/* クリアボタン */
+/* 機種クリアボタン（ホバーで赤くして削除系と示す） */
 #clear-device {
     background: #fff;
     border: 1px solid var(--border);
@@ -269,7 +328,11 @@ h3 {
     color: var(--danger);
 }
 
-/* ===== 結果エリア（横並び3枠） ===== */
+
+/* ============================================================
+   7. シミュレーター：結果エリア（3枚比較）
+   flex:1 1 0 が「完全な3等分」のキモ。
+   ============================================================ */
 #results-area {
     display: flex;
     gap: 16px;
@@ -294,6 +357,7 @@ h3 {
     transform: translateY(-2px);
 }
 
+/* 編集中カードを強調 */
 .result-card.result-active {
     border: 2px solid var(--navy);
     background: #FBFCFE;
@@ -307,6 +371,7 @@ h3 {
     padding-bottom: 10px;
 }
 
+/* 内訳（項目名 …… 金額 を両端揃え） */
 .result-breakdown {
     font-size: 14px;
     color: var(--text-sub);
@@ -319,6 +384,7 @@ h3 {
     padding: 3px 0;
 }
 
+/* 月額合計（一番目立たせる） */
 .result-total {
     font-weight: 700;
     font-size: 17px;
@@ -334,7 +400,7 @@ h3 {
     margin-top: 10px;
 }
 
-/* カード削除ボタン */
+/* カード右上の削除ボタン（親のrelativeで右上固定） */
 .card-delete-btn {
     position: absolute;
     top: 12px;
@@ -355,7 +421,7 @@ h3 {
     opacity: 1;
 }
 
-/* 追加カード */
+/* 追加カード（＋枠）。点線で「追加できる」と示し、結果カードと等幅に */
 .add-card {
     flex: 1 1 0;
     min-width: 0;
@@ -406,239 +472,10 @@ h3 {
     color: var(--navy);
 }
 
-/* ===== テーブル（管理画面） ===== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--surface);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
-}
 
-th {
-    background: var(--navy);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: left;
-    padding: 12px 16px;
-}
-
-td {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    font-size: 14px;
-}
-
-tbody tr:hover {
-    background: #F9FBFD;
-}
-
-/* ===== ボタン・リンク（管理画面） ===== */
-a {
-    color: var(--navy);
-}
-
-main a:not(.nav-link):not(.site-logo) {
-    color: var(--navy);
-}
-
-button {
-    font-family: inherit;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="number"],
-input[type="date"],
-textarea,
-select {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--text);
-    background: #fff;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    outline: none;
-    border-color: var(--navy);
-    box-shadow: 0 0 0 3px rgba(27, 58, 92, 0.1);
-}
-
-input[type="submit"] {
-    background: var(--navy);
-    color: #fff;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 8px;
-}
-
-input[type="submit"]:hover {
-    background: var(--navy-dark);
-}
-
-/* フォームの各行 */
-form>div {
-    margin-bottom: 16px;
-}
-
-form label {
-    font-weight: 600;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 6px;
-}
-
-form .plan-card label,
-.tab-content>label,
-.plan-card label {
-    font-weight: normal;
-    display: flex;
-    margin-bottom: 0;
-}
-
-/* チェックボックスリスト（対象ブランドなど）を横並びに */
-form input[type="checkbox"]+label {
-    display: inline;
-    font-weight: normal;
-    margin-bottom: 0;
-    margin-left: 6px;
-}
-
-form input[type="checkbox"] {
-    width: auto;
-    vertical-align: middle;
-}
-
-/* フォーム下の「一覧に戻る」リンク */
-form+a {
-    display: inline-block;
-    margin-top: 16px;
-}
-
-/* ===== レスポンシブ ===== */
-@media (max-width: 768px) {
-    #results-area {
-        flex-direction: column;
-    }
-
-    .header-inner {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-}
-
-/* ===== 管理画面ヘッダー ===== */
-.admin-header-inner {
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.admin-nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-}
-
-.admin-nav .nav-link {
-    font-size: 13px;
-    padding: 5px 10px;
-}
-
-.nav-link-accent {
-    background: var(--teal);
-}
-
-.nav-link-accent:hover {
-    background: #248277;
-}
-
-/* 管理画面の操作リンク・ボタン */
-td a {
-    margin-right: 8px;
-    font-size: 13px;
-    text-decoration: none;
-}
-
-td a:hover {
-    text-decoration: underline;
-}
-
-td .button_to {
-    display: inline;
-}
-
-td button {
-    background: #fff;
-    border: 1px solid var(--border);
-    color: var(--danger);
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-td button:hover {
-    background: var(--danger);
-    color: #fff;
-    border-color: var(--danger);
-}
-
-/* 新規追加リンク */
-.site-main>a[href*="new"] {
-    display: inline-block;
-    background: var(--navy);
-    color: #fff !important;
-    padding: 8px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-.site-main>a[href*="new"]:hover {
-    background: var(--navy-dark);
-}
-
-/* 管理画面のブランドタブ（リンク型） */
-.tabs a {
-    padding: 10px 18px;
-    color: var(--text-sub);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-}
-
-.tabs a:hover {
-    color: var(--navy);
-}
-
-.tabs a.active {
-    color: var(--navy);
-    border-bottom-color: var(--navy);
-}
-
-/* ===== 詳細エリア ===== */
+/* ============================================================
+   8. シミュレーター：詳細エリア（印刷対象）
+   ============================================================ */
 .detail-box {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -676,6 +513,7 @@ td button:hover {
     border-top: 2px solid var(--border);
 }
 
+/* 印刷ボタン（ティール） */
 .print-btn {
     margin-top: 20px;
     background: var(--teal);
@@ -692,10 +530,308 @@ td button:hover {
     background: #248277;
 }
 
-/* ===== 印刷用 ===== */
+
+/* ============================================================
+   9. フォーム（入力欄・ボタン）
+   ============================================================ */
+a {
+    color: var(--navy);
+}
+
+main a:not(.nav-link):not(.site-logo) {
+    color: var(--navy);
+}
+
+button {
+    font-family: inherit;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+}
+
+/* 入力中は紺のリングを出す */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(27, 58, 92, 0.1);
+}
+
+/* 送信ボタン（登録する／更新する） */
+input[type="submit"] {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+input[type="submit"]:hover {
+    background: var(--navy-dark);
+}
+
+/* フォームの各行とラベル */
+form>div {
+    margin-bottom: 16px;
+}
+
+form label {
+    font-weight: 600;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* 選択カード内ラベルは横並びにしたいので上書き */
+form .plan-card label,
+.tab-content>label,
+.plan-card label {
+    font-weight: normal;
+    display: flex;
+    margin-bottom: 0;
+}
+
+/* チェックボックスのリスト（対象ブランド等）を横並びに
+   input[type=checkbox] + label =「チェックボックス直後のラベル」 */
+form input[type="checkbox"]+label {
+    display: inline;
+    font-weight: normal;
+    margin-bottom: 0;
+    margin-left: 6px;
+}
+
+form input[type="checkbox"] {
+    width: auto;
+    vertical-align: middle;
+}
+
+/* フォーム直後の「一覧に戻る」リンクに余白 */
+form+a {
+    display: inline-block;
+    margin-top: 16px;
+}
+
+
+/* ============================================================
+   10. テーブル（管理画面一覧）
+   ============================================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+
+th {
+    background: var(--navy);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+}
+
+td {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+}
+
+tbody tr:hover {
+    background: #F9FBFD;
+}
+
+
+/* ============================================================
+   11. 管理画面：上部ヘッダー
+   サイドバー化に伴い、上部は「シミュレーターへ」「ログアウト」のみ。
+   ============================================================ */
+.admin-header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.admin-top-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 「シミュレーターへ」だけティールで目立たせる */
+.nav-link-accent {
+    background: var(--teal);
+}
+
+.nav-link-accent:hover {
+    background: #248277;
+}
+
+
+/* ============================================================
+   12. 管理画面：ナビの主従関係表現（横並び）
+   上部ナビで「親 › 子 › 子 ｜ 親 › 子 ｜ その他...」と並べ、
+   ブランド管理・メーカー管理を起点とした主従関係を横方向で示す。
+   ============================================================ */
+
+/* ナビ全体（折り返し可・縦中央そろえ） */
+.admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.admin-nav .nav-link {
+    font-size: 13px;
+    padding: 5px 10px;
+}
+
+/* 親メニュー（ブランド管理・メーカー管理）：太字で起点を強調 */
+.admin-nav .nav-parent {
+    font-weight: 700;
+}
+
+/* 子メニュー（プラン・割引・機種）：前に「›」を付けて従属を示す */
+.admin-nav .nav-child::before {
+    content: "›";
+    margin-right: 4px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* グループ間の区切り線（薄い縦棒） */
+.nav-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.25);
+    margin: 0 6px;
+}
+
+
+/* ============================================================
+   13. 管理画面：一覧の操作リンク・新規追加・タブ
+   ============================================================ */
+
+/* テーブル内の編集リンク・削除ボタン */
+td a {
+    margin-right: 8px;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+td .button_to {
+    display: inline;
+}
+
+td button {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--danger);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
+/* 新規追加リンクを紺ボタン化（紺地に白文字を !important で確定） */
+.site-main>a[href*="new"],
+.admin-main>a[href*="new"] {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.site-main>a[href*="new"]:hover,
+.admin-main>a[href*="new"]:hover {
+    background: var(--navy-dark);
+}
+
+/* 管理画面のブランド/メーカータブ（リンク型）。.tab-btnと見た目を統一 */
+.tabs a {
+    padding: 10px 18px;
+    color: var(--text-sub);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.tabs a:hover {
+    color: var(--navy);
+}
+
+.tabs a.active {
+    color: var(--navy);
+    border-bottom-color: var(--navy);
+}
+
+
+/* ============================================================
+   14. レスポンシブ（768px以下）
+   ============================================================ */
+@media (max-width: 768px) {
+
+    /* シミュレーター結果を縦並びに */
+    #results-area {
+        flex-direction: column;
+    }
+
+    /* 共通ヘッダーを縦並びに */
+    .header-inner {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+}
+
+
+/* ============================================================
+   15. 印刷用（@media print）
+   詳細エリア以外を隠し、詳細だけを紙に出す。
+   display:none で高さも消し、余分な空白ページを防ぐ。
+   ============================================================ */
 @media print {
 
-    /* ヘッダー・タブ・選択エリア・結果カードを隠す */
     .site-header,
     .tabs,
     .tab-content,
@@ -704,7 +840,6 @@ td button:hover {
         display: none !important;
     }
 
-    /* 詳細エリアだけ残す */
     .detail-box {
         box-shadow: none;
         border: none;

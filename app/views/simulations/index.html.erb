@@ -130,7 +130,7 @@
   {
     id: m.id,
     devices: m.devices.map { |d|
-      { id: d.id, name: d.name, price: d.price, maker_name: m.name }
+      { id: d.id, name: d.name, price: d.price, maker_name: m.name, group_name: d.group_name }
     }
   }
 }.to_json %>;

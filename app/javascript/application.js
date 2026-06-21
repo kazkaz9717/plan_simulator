@@ -533,7 +533,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        devicesArea.innerHTML = maker.devices.map(device => `
+        // group_nameごとにグループ分け（グループなしは standalone へ）
+        const grouped = {};
+        const standalone = [];
+        maker.devices.forEach(device => {
+            if (device.group_name) {
+                if (!grouped[device.group_name]) grouped[device.group_name] = [];
+                grouped[device.group_name].push(device);
+            } else {
+                standalone.push(device);
+            }
+        });
+
+        // 1台分のカードHTMLを作る共通関数
+        const deviceCard = (device) => `
             <div class="plan-card">
                 <label>
                     <input type="radio" name="device" value="${device.id}" data-price="${device.price}"
@@ -552,7 +565,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     </select>
                 </div>
             </div>
-        `).join('');
+        `;
+
+        let html = '';
+
+        // グループありを見出し付きで表示
+        Object.keys(grouped).forEach(groupName => {
+            html += `<h3>${groupName}</h3>`;
+            html += grouped[groupName].map(deviceCard).join('');
+        });
+
+        // グループなしを最後に表示
+        if (standalone.length > 0) {
+            html += '<h3>その他</h3>';
+            html += standalone.map(deviceCard).join('');
+        }
+
+        devicesArea.innerHTML = html;
     }
 
     // ===== UI復元 =====
