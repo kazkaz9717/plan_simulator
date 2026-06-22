@@ -71,9 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // 手数料（当日払い or 翌月払い で分ける）
-        let feeOnetime = 0;    // 当日払いの手数料
-        let feeFirstMonth = 0; // 翌月払いの手数料
+        // 手数料（当日 or 翌月 で分ける）
+        let feeOnetime = 0;    // 当日の手数料
+        let feeFirstMonth = 0; // 翌月の手数料
         state.fees.forEach(f => {
             if (f.timing === 'first_month') {
                 feeFirstMonth += f.price;
@@ -96,8 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
             permanentMonthly,        // プラン+サブスク（ずっと続く）
             deviceInstallment,       // 機種の分割情報 or null
             optionInstallments,       // オプション分割の配列
-            feeOnetime,       // 当日払いの手数料合計
-            feeFirstMonth     // 翌月払いの手数料合計
+            feeOnetime,       // 当日の手数料合計
+            feeFirstMonth     // 翌月の手数料合計
         };
     }
 
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // 翌月払いの手数料は1ヶ月目だけ加算
+        // 翌月の手数料は1ヶ月目だけ加算
         if (targetMonth === 1) {
             total += r.feeFirstMonth;
         }
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (r.planFee > 0) html += `<div>料金プラン：¥${r.planFee.toLocaleString()}</div>`;
         if (r.totalDiscount > 0) html += `<div>割引：△¥${r.totalDiscount.toLocaleString()}</div>`;
         if (r.subscriptionFee > 0) html += `<div>サブスク：¥${r.subscriptionFee.toLocaleString()}</div>`;
-        if (r.deviceMonthly > 0) html += `<div>機種(月額)：¥${r.deviceMonthly.toLocaleString()}</div>`;
+        if (r.deviceMonthly > 0) html += `<div>機種(${state.installment}回)：¥${r.deviceMonthly.toLocaleString()}</div>`;
         if (r.optionMonthly > 0) html += `<div>オプション(月額)：¥${r.optionMonthly.toLocaleString()}</div>`;
         if (r.feeFirstMonth > 0) html += `<div>手数料(翌月)：¥${r.feeFirstMonth.toLocaleString()}</div>`;
 
@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (state.fees.length > 0) {
             html += `<h3>手数料</h3><ul>`;
             state.fees.forEach(f => {
-                const timing = f.timing === 'first_month' ? '初月のみ' : '当日払い';
+                const timing = f.timing === 'first_month' ? '翌月' : '当日';
                 html += `<li>${f.name}　¥${f.price.toLocaleString()}（${timing}）</li>`;
             });
             html += `</ul>`;

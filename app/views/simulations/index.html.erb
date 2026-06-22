@@ -11,7 +11,7 @@
 
 <%# 料金プランタブ %>
 <div class="tab-content active" id="tab-plan">
-  <h2>ブランドを選択<span style="color: #6B7785; font-size: 14px; font-weight: normal;">（※他ブランド選択でプランリセット）</span></h2>
+  <h2>ブランドを選択<span style="color: #6B7785; font-size: 14px; font-weight: normal;">（※他ブランド選択で料金プラン・割引リセット）</span></h2>
   <% @plan_brands.each do |brand| %>
     <label>
       <input type="radio" name="plan_brand" value="<%= brand.id %>">
@@ -119,8 +119,8 @@
         <div>
           支払い：
           <select class="fee-timing-select">
-            <option value="onetime">当日払い</option>
-            <option value="first_month">翌月払い</option>
+            <option value="onetime">当日</option>
+            <option value="first_month">翌月</option>
           </select>
         </div>
       </div>
