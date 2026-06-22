@@ -12,16 +12,14 @@ Rails.application.routes.draw do
 
   # 管理者専用
   namespace :admin do
-    get "discounts/index"
-    get "discounts/new"
-    get "discounts/edit"
     resources :plan_brands
     resources :plans
-    resources :subscriptions
-    resources :options
+    resources :discounts
     resources :makers
     resources :devices
-    resources :discounts
+    resources :subscriptions
+    resources :options
+    resources :fees
     resources :users
   end
 end

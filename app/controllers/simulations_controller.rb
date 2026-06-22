@@ -7,5 +7,6 @@ class SimulationsController < ApplicationController
     @options = Option.all.price_desc
     @makers = Maker.all.includes(:devices)
     @discounts = Discount.all.includes(:plan_brands).amount_desc
+    @fees = Fee.all.price_desc
   end
 end

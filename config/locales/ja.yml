@@ -1,30 +1,29 @@
 ja:
   activerecord:
     models:
-      plan: プラン
       plan_brand: ブランド
-      subscription: サブスクリプション
-      option: オプション
+      plan: プラン
+      discount: 割引
       maker: メーカー
       device: 機種
-      discount: 割引
+      subscription: サブスクリプション
+      option: オプション
+      fee: 手数料
       user: ユーザー
     attributes:
+      plan_brand:
+        name: ブランド名
+      discount:
+        name: 割引名
+        amount: 割引額
+        duration_months: 適用期間（月数）
+        group_name: グループ名
+        plan_brands: 対象ブランド
       plan:
         name: プラン名
         monthly_fee: 月額料金
         group_name: グループ名
         plan_brands: ブランド
-      plan_brand:
-        name: ブランド名
-      subscription:
-        name: サービス名
-        monthly_fee: 月額料金
-        group_name: グループ名
-      option:
-        name: オプション名
-        price: 価格
-        group_name: グループ名
       maker:
         name: メーカー名
       device:
@@ -33,12 +32,18 @@ ja:
         release_date: 発売日
         group_name: グループ名
         maker: メーカー
-      discount:
-        name: 割引名
-        amount: 割引額
-        duration_months: 適用期間（月数）
+      subscription:
+        name: サービス名
+        monthly_fee: 月額料金
         group_name: グループ名
-        plan_brands: 対象ブランド
+      option:
+        name: オプション名
+        price: 価格
+        group_name: グループ名
+      fee:
+        name: 手数料名
+        price: 金額
+        group_name: グループ名
       user:
         name: ユーザー名
         password: パスワード

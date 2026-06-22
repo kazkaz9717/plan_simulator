@@ -6,6 +6,7 @@
   <button class="tab-btn" data-tab="subscription">サブスクリプション</button>
   <button class="tab-btn" data-tab="device">機種</button>
   <button class="tab-btn" data-tab="option">オプション</button>
+  <button class="tab-btn" data-tab="fee">手数料</button>
 </div>
 
 <%# 料金プランタブ %>
@@ -92,6 +93,34 @@
             <option value="24">24回</option>
             <option value="36">36回</option>
             <option value="48">48回</option>
+          </select>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<%# --- 手数料タブ --- %>
+<div class="tab-content" id="tab-fee">
+  <h2>手数料を選択</h2>
+  <% grouped_fees = @fees.group_by(&:group_name) %>
+  <% sorted_groups = grouped_fees.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+  <% sorted_groups.each do |group_name, fees_in_group| %>
+    <h3><%= group_name.presence || 'その他' %></h3>
+    <% fees_in_group.each do |fee| %>
+      <div class="plan-card">
+        <label>
+          <input type="checkbox" name="fees[]" value="<%= fee.id %>"
+               data-price="<%= fee.price %>"
+               data-name="<%= fee.name %>">
+          <%= fee.name %> ¥<%= number_with_delimiter(fee.price) %>
+        </label>
+        <%# 支払いタイミングをその場で選択（当日/翌月） %>
+        <div>
+          支払い：
+          <select class="fee-timing-select">
+            <option value="onetime">当日払い</option>
+            <option value="first_month">翌月払い</option>
           </select>
         </div>
       </div>

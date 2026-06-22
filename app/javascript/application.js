@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
             devicePrice: 0,
             deviceName: null,
             installment: '1',
-            discounts: []
+            discounts: [],
+            fees: []
         };
     }
 
@@ -70,9 +71,20 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        // 手数料（当日払い or 翌月払い で分ける）
+        let feeOnetime = 0;    // 当日払いの手数料
+        let feeFirstMonth = 0; // 翌月払いの手数料
+        state.fees.forEach(f => {
+            if (f.timing === 'first_month') {
+                feeFirstMonth += f.price;
+            } else {
+                feeOnetime += f.price;
+            }
+        });
+
         const totalDiscount = state.discounts.reduce((sum, d) => sum + d.amount, 0);
         const baseTotal = planFee + subscriptionFee + optionMonthly + deviceMonthly;
-        const todayFee = optionToday + deviceToday;
+        const todayFee = optionToday + deviceToday + feeOnetime;
 
         // 永続費用（分割が全て終わった後も残る月額）= プラン + サブスク
         const permanentMonthly = planFee + subscriptionFee;
@@ -83,28 +95,31 @@ document.addEventListener("DOMContentLoaded", () => {
             discounts: state.discounts,
             permanentMonthly,        // プラン+サブスク（ずっと続く）
             deviceInstallment,       // 機種の分割情報 or null
-            optionInstallments       // オプション分割の配列
+            optionInstallments,       // オプション分割の配列
+            feeOnetime,       // 当日払いの手数料合計
+            feeFirstMonth     // 翌月払いの手数料合計
         };
     }
 
     // 指定した月(targetMonth)における月額を計算する
     function monthlyFeeAt(targetMonth, r) {
-        // プラン + サブスク（永続）
         let total = r.permanentMonthly;
 
-        // 機種の分割（分割期間内なら加算）
         if (r.deviceInstallment && targetMonth <= r.deviceInstallment.until) {
             total += r.deviceInstallment.monthly;
         }
 
-        // オプションの分割（それぞれ分割期間内なら加算）
         r.optionInstallments.forEach(o => {
             if (targetMonth <= o.until) {
                 total += o.monthly;
             }
         });
 
-        // 割引（永年 or まだ期間内なら適用）
+        // 翌月払いの手数料は1ヶ月目だけ加算
+        if (targetMonth === 1) {
+            total += r.feeFirstMonth;
+        }
+
         const activeDiscount = r.discounts
             .filter(d => d.duration === null || d.duration >= targetMonth)
             .reduce((sum, d) => sum + d.amount, 0);
@@ -116,6 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function buildMonthlyLines(r) {
         // お金が変わる「区切り月」を全て集める
         const breakpoints = new Set();
+
+        // 翌月払いの手数料があれば、1ヶ月目で区切る
+        if (r.feeFirstMonth > 0) breakpoints.add(1);
 
         // 割引の終了月
         r.discounts.forEach(d => {
@@ -139,7 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
         sorted.forEach(month => {
             // この区間の代表月（開始月）で月額を計算
             const fee = monthlyFeeAt(prevMonth + 1, r);
-            html += `<div class="result-total">月額合計（${prevMonth + 1}〜${month}ヶ月目）：¥${fee.toLocaleString()}</div>`;
+            // 開始月と終了月が同じなら「Nヶ月目」、違えば「N〜Mヶ月目」
+            const label = (prevMonth + 1 === month)
+                ? `${month}ヶ月目`
+                : `${prevMonth + 1}〜${month}ヶ月目`;
+            html += `<div class="result-total">月額合計（${label}）：¥${fee.toLocaleString()}</div>`;
             prevMonth = month;
         });
 
@@ -256,9 +278,20 @@ document.addEventListener("DOMContentLoaded", () => {
             html += `</ul>`;
         }
 
+        // 手数料
+        if (state.fees.length > 0) {
+            html += `<h3>手数料</h3><ul>`;
+            state.fees.forEach(f => {
+                const timing = f.timing === 'first_month' ? '初月のみ' : '当日払い';
+                html += `<li>${f.name}　¥${f.price.toLocaleString()}（${timing}）</li>`;
+            });
+            html += `</ul>`;
+        }
+
         // 何も選択されていない場合
         if (state.plans.length === 0 && state.discounts.length === 0 &&
-            state.subscriptions.length === 0 && state.options.length === 0 && !state.deviceId) {
+            state.subscriptions.length === 0 && state.options.length === 0 &&
+            !state.deviceId && state.fees.length === 0) {
             html += `<p>項目が選択されていません</p>`;
         }
 
@@ -365,6 +398,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: el.dataset.duration ? parseInt(el.dataset.duration) : null,
                     name: el.dataset.name
                 }));
+        }
+        if (t.name === "fees[]" || t.classList.contains("fee-timing-select")) {
+            state.fees = Array.from(document.querySelectorAll('input[name="fees[]"]:checked'))
+                .map(el => {
+                    const timing = el.closest('.plan-card').querySelector('.fee-timing-select').value;
+                    return {
+                        id: parseInt(el.value),
+                        price: parseInt(el.dataset.price),
+                        name: el.dataset.name,
+                        timing: timing  // "onetime"（当日）or "first_month"（翌月）
+                    };
+                });
         }
 
         renderResults();
@@ -622,6 +667,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 el.checked = true;
                 const select = el.closest('.plan-card').querySelector('.installment-select');
                 if (select) select.value = o.installment;
+            }
+        });
+
+        state.fees.forEach(f => {
+            const el = document.querySelector(`input[name="fees[]"][value="${f.id}"]`);
+            if (el) {
+                el.checked = true;
+                const select = el.closest('.plan-card').querySelector('.fee-timing-select');
+                if (select) select.value = f.timing;
             }
         });
 

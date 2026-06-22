@@ -1,0 +1,26 @@
+<%= form_with model: [:admin, fee], local: true do |f| %>
+  <% if fee.errors.any? %>
+    <ul>
+      <% fee.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, '手数料名' %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :price, '金額' %>
+    <%= f.number_field :price %>
+  </div>
+
+  <div>
+    <%= f.label :group_name, 'グループ名（例：契約手数料）' %>
+    <%= f.text_field :group_name %>
+  </div>
+
+  <%= f.submit fee.persisted? ? '更新する' : '登録する' %>
+<% end %>

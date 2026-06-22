@@ -1,0 +1,30 @@
+<h1>手数料管理</h1>
+<%= link_to '新規追加', new_admin_fee_path %>
+
+<% grouped = @fees.group_by(&:group_name) %>
+<% sorted_groups = grouped.sort_by { |group_name, _| group_name.nil? ? 1 : 0 } %>
+<% sorted_groups.each do |group_name, fees_in_group| %>
+  <h2>▼ <%= group_name.presence || 'グループなし' %></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>手数料名</th>
+        <th>金額</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% fees_in_group.each do |fee| %>
+        <tr>
+          <td><%= fee.name %></td>
+          <td>¥<%= number_with_delimiter(fee.price) %></td>
+          <td>
+            <%= link_to '編集', edit_admin_fee_path(fee) %>
+            <%= button_to '削除', admin_fee_path(fee), method: :delete,
+                form_class: 'js-delete-form button_to' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
