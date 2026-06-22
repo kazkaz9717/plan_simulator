@@ -127,6 +127,12 @@ erDiagram
         bigint discount_id FK
         bigint plan_brand_id FK
     }
+    fees {
+        bigint id PK
+        string name
+        integer price
+        string group_name
+    }
 
     plans ||--o{ plan_brand_plans : ""
     plan_brands ||--o{ plan_brand_plans : ""
