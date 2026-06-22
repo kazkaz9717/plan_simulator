@@ -70,12 +70,6 @@
 
 ```mermaid
 erDiagram
-    users {
-        bigint id PK
-        string name
-        string password_digest
-        integer role
-    }
     plan_brands {
         bigint id PK
         string name
@@ -91,17 +85,17 @@ erDiagram
         bigint plan_id FK
         bigint plan_brand_id FK
     }
-    subscriptions {
+    discounts {
         bigint id PK
         string name
-        integer monthly_fee
+        integer amount
+        integer duration_months
         string group_name
     }
-    options {
+    discount_plan_brands {
         bigint id PK
-        string name
-        integer price
-        string group_name
+        bigint discount_id FK
+        bigint plan_brand_id FK
     }
     makers {
         bigint id PK
@@ -115,23 +109,29 @@ erDiagram
         string group_name
         bigint maker_id FK
     }
-    discounts {
+    subscriptions {
         bigint id PK
         string name
-        integer amount
-        integer duration_months
+        integer monthly_fee
         string group_name
     }
-    discount_plan_brands {
+    options {
         bigint id PK
-        bigint discount_id FK
-        bigint plan_brand_id FK
+        string name
+        integer price
+        string group_name
     }
     fees {
         bigint id PK
         string name
         integer price
         string group_name
+    }
+    users {
+        bigint id PK
+        string name
+        string password_digest
+        integer role
     }
 
     plans ||--o{ plan_brand_plans : ""
