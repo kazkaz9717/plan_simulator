@@ -87,7 +87,7 @@ Plan.find_or_create_by!(name: 'キッズケータイプラン') do |p|
   p.plan_brands = [brand_kids]
 end
 
-# 共有プラン（多対多確認用）
+# 音声プラン
 Plan.find_or_create_by!(name: 'かけ放題オプション') do |p|
   p.monthly_fee = 1980
   p.group_name = '通話オプション'
@@ -97,6 +97,11 @@ Plan.find_or_create_by!(name: '5分かけ放題') do |p|
   p.monthly_fee = 880
   p.group_name = '通話オプション'
   p.plan_brands = [brand_max, brand_mini]
+end
+Plan.find_or_create_by!(name: 'かけ放題オプション') do |p|
+  p.monthly_fee = 1100
+  p.group_name = '通話オプション'
+  p.plan_brands = [brand_simple]
 end
 
 # ------------------------------------------------------------
@@ -136,7 +141,7 @@ end
 Discount.find_or_create_by!(name: 'クレカ支払い割') do |d|
   d.amount = 187
   d.duration_months = nil
-  d.group_name = '支払い割'
+  d.group_name = 'クレカ支払い割'
   d.plan_brands = [brand_max, brand_mini, brand_simple]
 end
 
@@ -144,7 +149,7 @@ end
 Discount.find_or_create_by!(name: 'のりかえキャンペーン割') do |d|
   d.amount = 1100
   d.duration_months = 6
-  d.group_name = 'キャンペーン'
+  d.group_name = ''
   d.plan_brands = [brand_max]
 end
 
@@ -173,23 +178,45 @@ end
 # ------------------------------------------------------------
 Option.find_or_create_by!(name: '保護ガラスフィルム') do |o|
   o.price = 3300
-  o.group_name = 'アクセサリ'
+  o.group_name = 'フィルム'
+end
+Option.find_or_create_by!(name: '保護フィルム') do |o|
+  o.price = 1650
+  o.group_name = 'フィルム'
 end
 Option.find_or_create_by!(name: '手帳型ケース') do |o|
   o.price = 4400
-  o.group_name = 'アクセサリ'
+  o.group_name = 'ケース'
+end
+Option.find_or_create_by!(name: 'カバー型ケース') do |o|
+  o.price = 3300
+  o.group_name = 'ケース'
 end
 Option.find_or_create_by!(name: 'モバイルバッテリー') do |o|
   o.price = 5500
-  o.group_name = 'アクセサリ'
+  o.group_name = ''
 end
-Option.find_or_create_by!(name: '事務手数料') do |o|
-  o.price = 4950
-  o.group_name = '手数料'
+Option.find_or_create_by!(name: 'メモリーカード') do |o|
+  o.price = 4400
+  o.group_name = ''
 end
-Option.find_or_create_by!(name: '初期設定サポート') do |o|
-  o.price = 3300
-  o.group_name = '手数料'
+
+
+# ------------------------------------------------------------
+# 手数料（group_name でジャンル分け。支払いタイミングは
+# シミュレーター画面で「当日払い／初月のみ」を都度選択する）
+# ------------------------------------------------------------
+Fee.find_or_create_by!(name: '事務手数料') do |f|
+  f.price = 4950
+  f.group_name = '事務手数料'
+end
+Fee.find_or_create_by!(name: '初期設定サポート料') do |f|
+  f.price = 3300
+  f.group_name = 'サポート手数料'
+end
+Fee.find_or_create_by!(name: 'データ移行手数料') do |f|
+  f.price = 2200
+  f.group_name = 'サポート手数料'
 end
 
 # ------------------------------------------------------------
@@ -242,5 +269,5 @@ end
 
 puts "サンプルデータの投入が完了しました。"
 puts "ブランド: #{PlanBrand.count} / プラン: #{Plan.count} / 割引: #{Discount.count}"
-puts "サブスク: #{Subscription.count} / オプション: #{Option.count}"
+puts "サブスク: #{Subscription.count} / オプション: #{Option.count} / 手数料: #{Fee.count}"
 puts "メーカー: #{Maker.count} / 機種: #{Device.count} / ユーザー: #{User.count}"
