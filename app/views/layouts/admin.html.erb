@@ -47,5 +47,18 @@
       <% end %>
       <%= yield %>
     </main>
+
+    <%# 削除確認モーダル（普段は非表示） %>
+    <div id="delete-modal" class="modal-overlay">
+      <div class="modal">
+        <h3 class="modal-title">削除の確認</h3>
+        <p id="delete-modal-message" class="modal-message">本当に削除しますか？</p>
+        <div class="modal-actions">
+          <button type="button" id="delete-modal-cancel" class="modal-btn modal-btn-cancel">キャンセル</button>
+          <button type="button" id="delete-modal-confirm" class="modal-btn modal-btn-danger">削除する</button>
+        </div>
+      </div>
+    </div>
+    
   </body>
 </html>

@@ -845,3 +845,89 @@ td button:hover {
         border: none;
     }
 }
+
+
+/* ============================================================
+   16. 削除確認モーダル
+   普段は非表示。削除ボタンを押すと中央に表示し、背景を暗転。
+   ============================================================ */
+
+/* 背景の暗いレイヤー（普段は非表示） */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    /* 中央寄せ */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 開いているとき（JSが is-open を付ける） */
+.modal-overlay.is-open {
+    display: flex;
+}
+
+/* ダイアログ本体 */
+.modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    color: var(--navy);
+}
+
+.modal-message {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+}
+
+/* ボタンを右寄せで横並び */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+}
+
+/* キャンセル（白） */
+.modal-btn-cancel {
+    background: #fff;
+    color: var(--text-sub);
+}
+
+.modal-btn-cancel:hover {
+    background: #F1F5F9;
+}
+
+/* 削除する（赤） */
+.modal-btn-danger {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
+.modal-btn-danger:hover {
+    background: #C9302C;
+}

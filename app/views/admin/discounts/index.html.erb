@@ -35,7 +35,7 @@
           <td>
             <%= link_to '編集', edit_admin_discount_path(discount) %>
             <%= button_to '削除', admin_discount_path(discount), method: :delete,
-                data: { turbo_confirm: '本当に削除しますか？' } %>
+                form_class: 'js-delete-form button_to' %>
           </td>
         </tr>
       <% end %>

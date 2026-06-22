@@ -33,7 +33,7 @@
           <td>
             <%= link_to '編集', edit_admin_plan_path(plan) %>
             <%= button_to '削除', admin_plan_path(plan), method: :delete,
-                data: { turbo_confirm: '本当に削除しますか？' } %>
+                form_class: 'js-delete-form button_to' %>
           </td>
         </tr>
       <% end %>

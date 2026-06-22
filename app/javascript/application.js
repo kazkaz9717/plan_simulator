@@ -1,5 +1,3 @@
-import "@hotwired/turbo-rails"
-
 document.addEventListener("DOMContentLoaded", () => {
     // ===== シミュレーション状態管理 =====
     function createEmptyState() {
@@ -639,4 +637,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ===== 初期化 =====
     restoreUI();
+});
+
+// ============================================================
+// 削除確認モーダルの制御
+// 削除フォームの送信を一度止めてモーダルを表示し、
+// 「削除する」で本来の送信を実行する。
+// ============================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("delete-modal");
+    if (!modal) return; // モーダルが無いページ（管理画面以外）では何もしない
+
+    const message = document.getElementById("delete-modal-message");
+    const cancelBtn = document.getElementById("delete-modal-cancel");
+    const confirmBtn = document.getElementById("delete-modal-confirm");
+
+    let targetForm = null; // 削除対象のフォームを覚えておく変数
+
+    // 削除フォームの送信を横取り
+    document.addEventListener("submit", (e) => {
+        const form = e.target;
+        // 目印クラスが付いた削除フォームだけ対象
+        if (!form.classList.contains("js-delete-form")) return;
+
+        e.preventDefault();    // いったん送信を止める
+        targetForm = form;     // このフォームを覚えておく
+
+        // data-message があればその文言を、無ければデフォルトを表示
+        message.textContent = form.dataset.message || "本当に削除しますか？";
+
+        modal.classList.add("is-open"); // モーダルを開く
+    });
+
+    // 「削除する」→ 覚えておいたフォームを本当に送信
+    confirmBtn.addEventListener("click", () => {
+        if (targetForm) {
+            targetForm.classList.remove("js-delete-form"); // 横取り対象から外す
+            targetForm.submit();                            // 実際に送信
+        }
+    });
+
+    // 「キャンセル」→ モーダルを閉じる
+    cancelBtn.addEventListener("click", () => {
+        modal.classList.remove("is-open");
+        targetForm = null;
+    });
+
+    // 背景（暗い部分）クリックでも閉じる
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.remove("is-open");
+            targetForm = null;
+        }
+    });
 });
