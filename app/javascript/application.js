@@ -268,6 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         html += `<div class="result-today">当日払う料金：¥${r.todayFee.toLocaleString()}</div>`;
         html += `</div>`;
 
+        html += `<p class="detail-note">※ ユニバーサルサービス料、電話リレーサービス料は含まれていません。</p>`;
         html += `<button type="button" id="print-detail" class="print-btn">この内容を印刷する</button>`;
         html += `</div>`;
 

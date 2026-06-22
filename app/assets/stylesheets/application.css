@@ -513,6 +513,13 @@ h3 {
     border-top: 2px solid var(--border);
 }
 
+/* 詳細エリアの注意書き */
+.detail-note {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-sub);
+}
+
 /* 印刷ボタン（ティール） */
 .print-btn {
     margin-top: 20px;
