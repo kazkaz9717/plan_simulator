@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (r.subscriptionFee > 0) html += `<div>サブスク：¥${r.subscriptionFee.toLocaleString()}</div>`;
         if (r.deviceMonthly > 0) html += `<div>機種(月額)：¥${r.deviceMonthly.toLocaleString()}</div>`;
         if (r.optionMonthly > 0) html += `<div>オプション(月額)：¥${r.optionMonthly.toLocaleString()}</div>`;
+        if (r.feeFirstMonth > 0) html += `<div>手数料(翌月)：¥${r.feeFirstMonth.toLocaleString()}</div>`;
 
         html += '</div>';
         html += buildMonthlyLines(r);
