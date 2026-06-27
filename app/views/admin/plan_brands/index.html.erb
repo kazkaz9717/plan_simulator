@@ -11,7 +11,7 @@
   <tbody>
     <% @plan_brands.each do |plan_brand| %>
       <tr>
-        <td><%= plan_brand.name %></td>
+        <td data-label="ブランド名"><%= plan_brand.name %></td>
         <td>
           <%= link_to '編集', edit_admin_plan_brand_path(plan_brand) %>
           <%= button_to '削除', admin_plan_brand_path(plan_brand), method: :delete,

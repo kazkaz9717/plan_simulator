@@ -692,7 +692,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===== 初期化 =====
-    restoreUI();
+    if (document.getElementById("results-area")) {
+        restoreUI();
+    }
 });
 
 // ============================================================

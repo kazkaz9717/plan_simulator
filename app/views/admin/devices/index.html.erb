@@ -28,10 +28,10 @@
     <tbody>
       <% devices_in_group.each do |device| %>
         <tr>
-          <td><%= device.name %></td>
-          <td><%= device.maker.name %></td>
-          <td><%= device.release_date %></td>
-          <td>¥<%= number_with_delimiter(device.price) %></td>
+          <td data-label="機種名"><%= device.name %></td>
+          <td data-label="メーカー"><%= device.maker.name %></td>
+          <td data-label="発売日"><%= device.release_date %></td>
+          <td data-label="価格">¥<%= number_with_delimiter(device.price) %></td>
           <td>
             <%= link_to '編集', edit_admin_device_path(device) %>
             <%= button_to '削除', admin_device_path(device), method: :delete,

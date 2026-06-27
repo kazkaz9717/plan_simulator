@@ -28,10 +28,10 @@
     <tbody>
       <% discounts_in_group.each do |discount| %>
         <tr>
-          <td><%= discount.name %></td>
-          <td><%= discount.plan_brands.map(&:name).join(', ') %></td>
-          <td>¥<%= number_with_delimiter(discount.amount) %></td>
-          <td><%= discount.duration_months ? "#{discount.duration_months}ヶ月間" : '永年' %></td>
+          <td data-label="割引名"><%= discount.name %></td>
+          <td data-label="対象ブランド"><%= discount.plan_brands.map(&:name).join(', ') %></td>
+          <td data-label="割引額/月">¥<%= number_with_delimiter(discount.amount) %></td>
+          <td data-label="適用期間"><%= discount.duration_months ? "#{discount.duration_months}ヶ月間" : '永年' %></td>
           <td>
             <%= link_to '編集', edit_admin_discount_path(discount) %>
             <%= button_to '削除', admin_discount_path(discount), method: :delete,

@@ -16,8 +16,8 @@
     <tbody>
       <% options_in_group.each do |option| %>
         <tr>
-          <td><%= option.name %></td>
-          <td>¥<%= number_with_delimiter(option.price) %></td>
+          <td data-label="オプション品名"><%= option.name %></td>
+          <td data-label="価格">¥<%= number_with_delimiter(option.price) %></td>
           <td>
             <%= link_to '編集', edit_admin_option_path(option) %>
             <%= button_to '削除', admin_option_path(option), method: :delete,

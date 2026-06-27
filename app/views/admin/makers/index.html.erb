@@ -11,7 +11,7 @@
   <tbody>
     <% @makers.each do |maker| %>
       <tr>
-        <td><%= maker.name %></td>
+        <td data-label="メーカー名"><%= maker.name %></td>
         <td>
           <%= link_to '編集', edit_admin_maker_path(maker) %>
           <%= button_to '削除', admin_maker_path(maker), method: :delete,

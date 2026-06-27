@@ -834,6 +834,97 @@ td button:hover {
     h1 {
         font-size: 22px;
     }
+
+    /* 管理画面：ナビをスマホ用に整理 */
+    .admin-nav {
+        gap: 2px;
+    }
+
+    .admin-nav .nav-link {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+
+    .nav-right {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 4px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* 管理画面：テーブル → カード型変換 */
+    /* thead を非表示にし、各 tr をカードとして表示する。 */
+    /* td::before で列名をラベルとして表示。 */
+    table {
+        box-shadow: none;
+        background: transparent;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody tr {
+        display: block;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    tbody tr:hover {
+        background: var(--surface);
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 5px 0;
+        border-top: none;
+        font-size: 14px;
+        gap: 8px;
+    }
+
+    /* 区切り線：最初のtd以外の上に引く */
+    td+td {
+        border-top: 1px solid var(--border);
+    }
+
+    /* 列名ラベル（::before で自動挿入） */
+    td::before {
+        content: attr(data-label);
+        font-size: 12px;
+        color: var(--text-sub);
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* 操作列（編集・削除）は横並びで下に */
+    td:last-child {
+        justify-content: flex-end;
+        gap: 8px;
+        padding-top: 10px;
+        margin-top: 4px;
+    }
+
+    td:last-child::before {
+        display: none;
+    }
+
+    td a,
+    td button {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    td button {
+        padding: 6px 14px;
+    }
 }
 
 

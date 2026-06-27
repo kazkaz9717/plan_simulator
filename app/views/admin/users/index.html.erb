@@ -15,7 +15,7 @@
     <tbody>
       <% users_in_role.each do |user| %>
         <tr>
-          <td><%= user.name %></td>
+          <td data-label="ユーザー名"><%= user.name %></td>
           <td>
             <%= link_to '編集', edit_admin_user_path(user) %>
             <%= button_to '削除', admin_user_path(user), method: :delete,

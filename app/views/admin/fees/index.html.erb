@@ -16,8 +16,8 @@
     <tbody>
       <% fees_in_group.each do |fee| %>
         <tr>
-          <td><%= fee.name %></td>
-          <td>¥<%= number_with_delimiter(fee.price) %></td>
+          <td data-label="手数料名"><%= fee.name %></td>
+          <td data-label="金額">¥<%= number_with_delimiter(fee.price) %></td>
           <td>
             <%= link_to '編集', edit_admin_fee_path(fee) %>
             <%= button_to '削除', admin_fee_path(fee), method: :delete,

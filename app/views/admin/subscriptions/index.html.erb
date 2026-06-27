@@ -16,8 +16,8 @@
     <tbody>
       <% subscriptions_in_group.each do |subscription| %>
         <tr>
-          <td><%= subscription.name %></td>
-          <td>¥<%= number_with_delimiter(subscription.monthly_fee) %></td>
+          <td data-label="サービス名"><%= subscription.name %></td>
+          <td data-label="月額料金">¥<%= number_with_delimiter(subscription.monthly_fee) %></td>
           <td>
             <%= link_to '編集', edit_admin_subscription_path(subscription) %>
             <%= button_to '削除', admin_subscription_path(subscription), method: :delete,
