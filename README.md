@@ -27,6 +27,16 @@
 | :---: | :---: |
 | ![管理画面](docs/screenshots/admin.png) | ![印刷プレビュー](docs/screenshots/print.png) |
 
+### 管理画面
+
+| 機種管理（ブランド別タブ・グループ分け） | プラン編集（ブランドの複数選択） |
+| :---: | :---: |
+| ![機種管理](docs/screenshots/admin_devices.png) | ![プラン編集](docs/screenshots/admin_plan_edit.png) |
+
+| ユーザー管理（権限別表示） | ユーザー新規追加（権限の選択） |
+| :---: | :---: |
+| ![ユーザー管理](docs/screenshots/admin_users.png) | ![ユーザー新規追加](docs/screenshots/admin_user_new.png) |
+
 ---
 
 ## ✨ 主な機能
