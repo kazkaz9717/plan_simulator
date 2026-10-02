@@ -13,7 +13,7 @@
 User.find_or_create_by!(name: 'guest') do |user|
   user.password = 'password'
   user.password_confirmation = 'password'
-  user.role = :admin
+  user.role = :general
 end
 
 # 追加の管理者（店長など、店舗を管理する役割を想定）
