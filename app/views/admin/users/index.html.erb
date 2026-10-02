@@ -3,7 +3,8 @@
 
 <% role_labels = { 'admin' => '管理者', 'general' => '一般' } %>
 <% grouped = @users.group_by(&:role) %>
-<% grouped.each do |role, users_in_role| %>
+<% ordered_roles = grouped.sort_by { |role, _| role == 'admin' ? 0 : 1 } %>
+<% ordered_roles.each do |role, users_in_role| %>
   <h2>▼ <%= role_labels[role] || role %></h2>
   <table>
     <thead>
